@@ -1,0 +1,26 @@
+---
+- name: Ensure Recommendarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ Recommendarr_config_dir }}" }
+    - { path: "{{ Recommendarr_data_dir }}" }
+
+- name: Deploy Recommendarr Docker Compose file
+  template:
+    src: Recommendarr-compose.yml.j2
+    dest: "{{ Recommendarr_compose_path }}"
+  notify: 
+    - Restart Recommendarr
+
+- name: Launch Recommendarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ Recommendarr_compose_dir }}"
+    files:
+      - "{{ Recommendarr_compose_path }}"
+    state: started

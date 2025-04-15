@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  jellyseerr:
+    image: fallenbagel/jellyseerr
+    container_name: jellyseerr
+    restart: unless-stopped
+    volumes:
+      - {{ jellyseerr_config_dir }}:/config
+      - {{ jellyseerr_data_dir }}:/data
+    ports:
+      - "5055:5055"  # Replace with actual ports
+    environment:
+      - TZ=Europe/London

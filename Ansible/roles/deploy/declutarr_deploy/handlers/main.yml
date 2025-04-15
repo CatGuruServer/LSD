@@ -1,0 +1,7 @@
+---
+- name: Restart declutarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ declutarr_compose_dir }}"
+    files:
+      - "{{ declutarr_compose_path }}"
+    state: restarted

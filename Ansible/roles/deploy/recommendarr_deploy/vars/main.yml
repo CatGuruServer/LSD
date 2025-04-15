@@ -1,0 +1,5 @@
+---
+Recommendarr_config_dir: "/opt/Recommendarr/config"
+Recommendarr_data_dir: "/opt/Recommendarr/data"
+Recommendarr_compose_dir: "/opt/Recommendarr"
+Recommendarr_compose_path: "/opt/Recommendarr/docker-compose.yml"

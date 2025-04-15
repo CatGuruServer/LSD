@@ -1,0 +1,5 @@
+---
+portainer_config_dir: "{{ config_base_dir }}/portainer"
+portainer_compose_dir: "{{ compose_base_dir }}/portainer"
+portainer_compose_path: "{{ portainer_compose_dir }}/docker-compose.yml"
+portainer_version: "latest"

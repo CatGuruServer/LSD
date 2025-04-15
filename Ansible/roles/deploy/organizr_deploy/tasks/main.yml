@@ -1,0 +1,24 @@
+---
+- name: Ensure Organizr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+  loop:
+    - { path: "{{ organizr_config_dir }}" }
+
+- name: Deploy Organizr Docker Compose file
+  template:
+    src: organizr-compose.yml.j2
+    dest: "{{ organizr_compose_path }}"
+  notify:
+    - Restart Organizr
+
+- name: Launch Organizr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ organizr_compose_dir }}"
+    files:
+      - "{{ organizr_compose_path }}"
+    state: present

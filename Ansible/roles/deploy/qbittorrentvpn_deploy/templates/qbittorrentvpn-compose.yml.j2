@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  qbittorrentvpn:
+    image: dyonr/qbittorrentvpn:latest
+    container_name: qbittorrentvpn
+    restart: unless-stopped
+    volumes:
+      - {{ qbittorrentvpn_config_dir }}:/config
+      - {{ qbittorrentvpn_data_dir }}:/data
+    ports:
+      - "7893:8080"  # Replace with actual ports
+      - "8999:8999"
+    environment:
+      - VPN_ENABLED=yes
+      - VPN_TYPE=wireguard
+      - TZ=Europe/London

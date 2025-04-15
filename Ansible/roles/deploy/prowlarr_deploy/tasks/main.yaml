@@ -1,0 +1,36 @@
+---
+- name: Ensure docker-compose is installed
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Setup Prowlarr directory
+  ansible.builtin.file:
+    path: "{{ prowlarr_compose_dir }}"
+    state: directory
+    mode: '0755'  # Optional file permissions
+    owner: catguru  # Optional ownership
+    group: catguru  # Optional group ownership
+
+- name: Deploy Prowlarr using Docker Compose
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"
+    dest: "{{ prowlarr_compose_path }}"
+    mode: '0755'  # Optional file permissions
+    owner: catguru  # Optional ownership
+    group: catguru  # Optional group ownership
+  notify:
+    - Start prowlarr
+
+- name: Run Prowlarr docker-compose up
+  community.docker.docker_compose_v2:
+    project_src: "{{ prowlarr_compose_dir }}"
+    files:
+      - "{{ prowlarr_compose_path }}"
+    state: present

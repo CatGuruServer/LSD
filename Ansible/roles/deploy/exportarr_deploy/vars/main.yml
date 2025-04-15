@@ -1,0 +1,5 @@
+---
+exportarr_config_dir: "/opt/exportarr/config"
+exportarr_data_dir: "/opt/exportarr/data"
+exportarr_compose_dir: "/opt/exportarr"
+exportarr_compose_path: "/opt/exportarr/docker-compose.yml"

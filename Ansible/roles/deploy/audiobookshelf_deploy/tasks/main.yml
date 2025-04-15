@@ -1,0 +1,37 @@
+---
+- name: Ensure docker-compose is installed
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+    
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure audiobookshelf directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: '0755'
+    owner: catguru
+    group: catguru
+  loop:
+    - { path: "{{ audiobookshelf_compose_dir }}" }
+    - { path: "{{ audiobookshelf_config_dir }}" }
+    - { path: "{{ audiobookshelf_data_dir }}" }
+
+- name: Deploy audiobookshelf Docker Compose file
+  template:
+    src: audiobookshelf-compose.yml.j2
+    dest: "{{ audiobookshelf_compose_path }}"
+  notify: 
+    - Restart audiobookshelf
+
+- name: Launch audiobookshelf using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ audiobookshelf_compose_dir }}"
+    files:
+      - "{{ audiobookshelf_compose_path }}"
+    state: present

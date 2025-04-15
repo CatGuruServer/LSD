@@ -1,0 +1,5 @@
+---
+node_exporter_config_dir: "/opt/node_exporter/config"
+node_exporter_data_dir: "/opt/node_exporter/data"
+node_exporter_compose_dir: "/opt/node_exporter"
+node_exporter_compose_path: "/opt/node_exporter/docker-compose.yml"

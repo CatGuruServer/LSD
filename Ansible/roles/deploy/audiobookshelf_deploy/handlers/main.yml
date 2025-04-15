@@ -1,0 +1,7 @@
+---
+- name: Restart audiobookshelf
+  community.docker.docker_compose_v2:
+    project_src:  "{{ audiobookshelf_compose_dir }}"
+    files:
+      - "{{audiobookshelf_compose_path}}"
+    state: restarted

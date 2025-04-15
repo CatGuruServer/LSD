@@ -1,0 +1,26 @@
+---
+- name: Ensure node_exporter directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ node_exporter_config_dir }}" }
+    - { path: "{{ node_exporter_data_dir }}" }
+
+- name: Deploy node_exporter Docker Compose file
+  template:
+    src: node_exporter-compose.yml.j2
+    dest: "{{ node_exporter_compose_path }}"
+  notify: 
+    - Restart node_exporter
+
+- name: Launch node_exporter using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ node_exporter_compose_dir }}"
+    files:
+      - "{{ node_exporter_compose_path }}"
+    state: started

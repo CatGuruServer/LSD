@@ -1,0 +1,36 @@
+---
+- name: Ensure docker-compose is installed
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Setup Portainer directory
+  ansible.builtin.file:
+    path: "{{ portainer_compose_dir }}"
+    state: directory
+    mode: '0755'
+    owner: catguru
+    group: catguru
+
+- name: Deploy Portainer using Docker Compose
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"
+    dest: "{{ portainer_compose_path }}"
+    mode: '0755'
+    owner: catguru
+    group: catguru
+  notify:
+    - Start Portainer
+
+- name: Run Portainer docker-compose up
+  community.docker.docker_compose_v2:
+    project_src: "{{ portainer_compose_dir }}"
+    files:
+      - "{{ portainer_compose_path }}"
+    state: present

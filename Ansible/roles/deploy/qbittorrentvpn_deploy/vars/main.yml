@@ -1,0 +1,5 @@
+---
+qbittorrentvpn_config_dir: "{{ config_base_dir }}/qbittorrentvpn"
+qbittorrentvpn_data_dir: "{{ qbittorrentvpn_config_dir }}/data"
+qbittorrentvpn_compose_dir: "{{ compose_base_dir }}/qbittorrentvpn"
+qbittorrentvpn_compose_path: "{{ qbittorrentvpn_compose_dir }}/docker-compose.yml"

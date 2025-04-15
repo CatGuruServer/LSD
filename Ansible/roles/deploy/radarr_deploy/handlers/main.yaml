@@ -1,0 +1,7 @@
+---
+- name: Restart Radarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ radarr_compose_dir }}"
+    files:
+      - "{{ radarr_compose_path }}"
+    state: restarted

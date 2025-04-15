@@ -1,0 +1,7 @@
+---
+- name: Restart Cockpit
+  community.docker.docker_compose_v2:
+    project_src: "{{ cockpit_compose_dir }}"
+    files:
+      - "{{ cockpit_compose_path }}"
+    state: restarted

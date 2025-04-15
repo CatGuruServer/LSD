@@ -1,0 +1,5 @@
+---
+jfa_go_config_dir: "{{ config_base_dir }}/jfa-go/config"
+jfa_go_data_dir: "{{ jfa_go_config_dir }}/jfa-go/data"
+jfa_go_compose_dir: "{{ compose_base_dir }}/jfa-go"
+jfa_go_compose_path: "{{ jfa_go_compose_dir }}/docker-compose.yml"

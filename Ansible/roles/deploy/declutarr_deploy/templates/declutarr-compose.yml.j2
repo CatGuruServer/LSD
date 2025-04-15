@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  declutarr:
+    image: <replace-with-image>
+    container_name: declutarr
+    restart: unless-stopped
+    volumes:
+      - {{ declutarr_config_dir }}:/config
+      - {{ declutarr_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - TZ=UTC

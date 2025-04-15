@@ -1,0 +1,8 @@
+---
+- name: Start sonarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ sonarr_compose_dir }}"
+    files:
+      - "{{ sonarr_compose_path }}"
+    state: restarted
+  

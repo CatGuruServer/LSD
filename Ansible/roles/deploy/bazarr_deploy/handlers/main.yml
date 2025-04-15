@@ -1,0 +1,7 @@
+---
+- name: Restart Bazarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ bazarr_compose_dir }}"
+    files:
+      - "{{ bazarr_compose_path }}"
+    state: restarted

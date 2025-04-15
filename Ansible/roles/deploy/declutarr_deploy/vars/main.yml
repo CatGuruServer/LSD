@@ -1,0 +1,5 @@
+---
+declutarr_config_dir: "/opt/declutarr/config"
+declutarr_data_dir: "/opt/declutarr/data"
+declutarr_compose_dir: "/opt/declutarr"
+declutarr_compose_path: "/opt/declutarr/docker-compose.yml"

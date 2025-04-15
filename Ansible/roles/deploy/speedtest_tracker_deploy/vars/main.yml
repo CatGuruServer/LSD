@@ -1,0 +1,4 @@
+---
+speedtest_config_dir: "{{ config_base_dir }}/speedtest/config"
+speedtest_compose_dir: "{{ compose_base_dir }}/speedtest"
+speedtest_compose_path: "{{ speedtest_compose_dir }}/docker-compose.yml"

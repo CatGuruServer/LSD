@@ -1,0 +1,5 @@
+---
+bazarr_config_dir: "/opt/bazarr/config"
+bazarr_data_dir: "/opt/bazarr/data"
+bazarr_compose_dir: "/opt/bazarr"
+bazarr_compose_path: "/opt/bazarr/docker-compose.yml"

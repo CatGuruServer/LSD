@@ -1,0 +1,7 @@
+---
+- name: Start prowlarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ prowlarr_compose_dir}}"
+    files:
+      - "{{ prowlarr_compose_path }}"
+    state: restarted

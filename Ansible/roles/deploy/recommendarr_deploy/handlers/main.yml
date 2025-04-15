@@ -1,0 +1,7 @@
+---
+- name: Restart Recommendarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ Recommendarr_compose_dir }}"
+    files:
+      - "{{ Recommendarr_compose_path }}"
+    state: restarted

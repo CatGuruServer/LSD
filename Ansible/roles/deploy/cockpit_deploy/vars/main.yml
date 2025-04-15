@@ -1,0 +1,4 @@
+---
+cockpit_config_dir: "/opt/cockpit/config"
+cockpit_compose_dir: "/opt/cockpit"
+cockpit_compose_path: "/opt/cockpit/docker-compose.yml"

@@ -1,0 +1,6 @@
+---
+radarr_version: "latest"
+radarr_config_dir: "{{ config_base_dir }}/radarr"
+radarr_data_dir: "{{ media_base_dir }}/Movies"
+radarr_compose_dir: "{{ compose_base_dir }}/radarr"
+radarr_compose_path: "{{ radarr_compose_dir }}/docker-compose.yml"

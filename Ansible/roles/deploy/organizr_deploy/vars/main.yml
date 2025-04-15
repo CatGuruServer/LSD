@@ -1,0 +1,4 @@
+---
+organizr_config_dir: "{{ config_base_dir }}/organizr/config"
+organizr_compose_dir: "{{ compose_base_dir }}/organizr"
+organizr_compose_path: "{{ organizr_compose_dir }}/docker-compose.yml"

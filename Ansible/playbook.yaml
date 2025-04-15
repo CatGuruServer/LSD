@@ -1,0 +1,27 @@
+---
+- name: Install required Ansible Galaxy collections
+  hosts: localhost
+  tasks:
+    - name: Install collections from requirements.yml
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection install -r /home/catguru/LazyServerDeploy/Ansible/requirements.yml
+      changed_when: false
+
+- name: Install Docker on Ubuntu
+  hosts: all
+  become: true
+  roles:
+    - install/docker_install
+    - deploy/portainer_deploy
+    - deploy/jellyfin_deploy
+    - deploy/radarr_deploy
+    - deploy/sonarr_deploy
+    - deploy/prowlarr_deploy
+    - deploy/qbittorrentvpn_deploy
+    - deploy/jellyseerr_deploy
+    - deploy/lidarr_deploy
+    - deploy/audiobookshelf_deploy
+    - deploy/jfa-go_deploy
+    - deploy/recyclarr_deploy
+    - deploy/speedtest_tracker_deploy
+    - deploy/organizr_deploy

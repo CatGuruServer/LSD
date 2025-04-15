@@ -1,0 +1,30 @@
+---
+- name: Ensure recyclarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+    recurse: true
+  loop:
+    - { path: "{{ recyclarr_compose_dir }}"}
+    - { path: "{{ recyclarr_config_dir }}" }
+    - { path: "{{ recyclarr_data_dir }}" }
+
+- name: Deploy recyclarr Docker Compose file
+  template:
+    src: "templates/recyclarr_compose.yml.j2"
+    dest: "{{ recyclarr_compose_path }}"
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+  notify: 
+    - Restart recyclarr
+
+- name: Launch recyclarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ recyclarr_compose_dir }}"
+    files:
+      - "{{ recyclarr_compose_path }}"
+    state: present

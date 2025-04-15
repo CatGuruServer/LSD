@@ -1,0 +1,7 @@
+---
+- name: Restart Speedtest Tracker
+  community.docker.docker_compose_v2:
+    project_src: "{{ speedtest_compose_dir }}"
+    files:
+      - "{{ speedtest_compose_path }}"
+    state: restarted

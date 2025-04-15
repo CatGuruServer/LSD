@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  Recommendarr:
+    image: <replace-with-image>
+    container_name: Recommendarr
+    restart: unless-stopped
+    volumes:
+      - {{ Recommendarr_config_dir }}:/config
+      - {{ Recommendarr_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - TZ=UTC

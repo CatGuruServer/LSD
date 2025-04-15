@@ -1,0 +1,5 @@
+---
+prometheus_config_dir: "/opt/prometheus/config"
+prometheus_data_dir: "/opt/prometheus/data"
+prometheus_compose_dir: "/opt/prometheus"
+prometheus_compose_path: "/opt/prometheus/docker-compose.yml"

@@ -1,0 +1,39 @@
+---
+- name: Ensure docker-compose is installed
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure Radarr directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: catguru
+    group: catguru
+  loop:
+    - "{{ radarr_compose_dir }}"
+    - "{{ radarr_config_dir }}"
+
+- name: Deploy Radarr Docker Compose file
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"
+    dest: "{{ radarr_compose_path }}"
+    mode: '0755'
+    owner: catguru
+    group: catguru
+  notify:
+    - Restart Radarr
+
+- name: Launch Radarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ radarr_compose_dir }}"
+    files:
+      - "{{ radarr_compose_path }}"
+    state: present

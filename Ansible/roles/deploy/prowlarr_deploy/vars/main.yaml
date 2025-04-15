@@ -1,0 +1,5 @@
+---
+prowlarr_version: "latest"
+prowlarr_config_dir: "{{ config_base_dir }}/prowlarr"
+prowlarr_compose_dir: "{{ compose_base_dir }}/sonarr"
+prowlarr_compose_path: "{{ prowlarr_compose_dir }}/docker-compose.yml"

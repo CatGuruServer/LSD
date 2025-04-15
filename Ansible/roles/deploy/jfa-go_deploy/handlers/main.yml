@@ -1,0 +1,7 @@
+---
+- name: Restart jfa-go
+  community.docker.docker_compose_v2:
+    project_src: "{{ jfa_go_compose_dir }}"
+    files:
+      - "{{ jfa_go_compose_path }}"
+    state: restarted

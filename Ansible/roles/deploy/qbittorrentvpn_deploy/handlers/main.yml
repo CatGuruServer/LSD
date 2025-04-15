@@ -1,0 +1,7 @@
+---
+- name: Restart qbittorrentvpn
+  community.docker.docker_compose_v2:
+    project_src: "{{ qbittorrentvpn_compose_dir }}"
+    files:
+      - "{{ qbittorrentvpn_compose_path }}"
+    state: restarted

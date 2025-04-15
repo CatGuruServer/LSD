@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  node_exporter:
+    image: <replace-with-image>
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes:
+      - {{ node_exporter_config_dir }}:/config
+      - {{ node_exporter_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - TZ=UTC

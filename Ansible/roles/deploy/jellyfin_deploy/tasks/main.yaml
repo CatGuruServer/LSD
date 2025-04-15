@@ -1,0 +1,38 @@
+---
+- name: Ensure docker-compose is installed
+  ansible.builtin.package:
+    name: docker-compose
+    state: present
+
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Ensure Jellyfin directories exist with proper permissions
+  file:
+    path: "{{ jellyfin_compose_dir }}"
+    state: directory
+    mode: '0755'
+    owner: catguru
+    group: catguru
+    recurse: true
+  loop:
+    - { path: "{{ jellyfin_config_dir }}", owner: "catguru", group: "catguru" }
+    - { path: "{{ jellyfin_cache_dir }}", owner: "catguru", group: "catguru" }
+
+- name: Deploy Jellyfin Docker Compose file
+  template:
+    src: jellyfin-compose.yml.j2
+    dest: "{{ jellyfin_compose_path }}"
+  notify:
+    - Restart Jellyfin
+
+- name: Launch Jellyfin using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ jellyfin_compose_dir }}"
+    files:
+      - "{{ jellyfin_compose_path }}"
+    state: present
+

@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  readarr:
+    image: <replace-with-image>
+    container_name: readarr
+    restart: unless-stopped
+    volumes:
+      - {{ readarr_config_dir }}:/config
+      - {{ readarr_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - TZ=UTC

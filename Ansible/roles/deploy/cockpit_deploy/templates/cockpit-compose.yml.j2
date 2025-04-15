@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  cockpit:
+    image: cockpit/cockpit
+    container_name: cockpit
+    restart: unless-stopped
+    volumes:
+      - {{ cockpit_config_dir }}:/config
+    ports:
+      - "9090:9090"
+    environment:
+      - TZ=UTC

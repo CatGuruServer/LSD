@@ -1,0 +1,5 @@
+---
+audiobookshelf_config_dir: "{{ config_base_dir }}/audiobookshelf"
+audiobookshelf_data_dir: "{{ audiobookshelf_config_dir }}/data"
+audiobookshelf_compose_dir: "{{ compose_base_dir }}/audiobookshelf"
+audiobookshelf_compose_path: "{{ audiobookshelf_compose_dir }}/docker-compose.yml"

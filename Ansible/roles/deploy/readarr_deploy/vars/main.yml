@@ -1,0 +1,5 @@
+---
+readarr_config_dir: "/opt/readarr/config"
+readarr_data_dir: "/opt/readarr/data"
+readarr_compose_dir: "/opt/readarr"
+readarr_compose_path: "/opt/readarr/docker-compose.yml"

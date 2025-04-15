@@ -1,0 +1,26 @@
+---
+- name: Ensure readarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ readarr_config_dir }}" }
+    - { path: "{{ readarr_data_dir }}" }
+
+- name: Deploy readarr Docker Compose file
+  template:
+    src: readarr-compose.yml.j2
+    dest: "{{ readarr_compose_path }}"
+  notify: 
+    - Restart readarr
+
+- name: Launch readarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ readarr_compose_dir }}"
+    files:
+      - "{{ readarr_compose_path }}"
+    state: started

@@ -1,0 +1,25 @@
+---
+- name: Ensure Bazarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "0755"
+    owner: "root"
+    group: "root"
+  loop:
+    - { path: "{{ bazarr_config_dir }}" }
+    - { path: "{{ bazarr_data_dir }}" }
+
+- name: Deploy Bazarr Docker Compose file
+  template:
+    src: bazarr-compose.yml.j2
+    dest: "{{ bazarr_compose_path }}"
+  notify:
+    - Restart Bazarr
+
+- name: Launch Bazarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ bazarr_compose_dir }}"
+    files:
+      - "{{ bazarr_compose_path }}"
+    state: started

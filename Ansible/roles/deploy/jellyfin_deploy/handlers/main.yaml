@@ -1,0 +1,7 @@
+---
+- name: Restart Jellyfin
+  community.docker.docker_compose_v2:
+    project_src: "{{ jellyfin_compose_dir }}"
+    files:
+      - "{{ jellyfin_compose_path }}"
+    state: restarted

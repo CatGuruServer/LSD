@@ -1,0 +1,11 @@
+services:
+  organizr:
+    image: causefx/Organizr
+    container_name: organizr
+    restart: unless-stopped
+    volumes:
+      - {{ organizr_config_dir }}:/config
+    ports:
+      - "90:80"
+    environment:
+      - TZ=Europe/London

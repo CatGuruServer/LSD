@@ -1,0 +1,7 @@
+---
+- name: Restart Organizr
+  community.docker.docker_compose_v2:
+    project_src: "{{ organizr_compose_dir }}"
+    files:
+      - "{{ organizr_compose_path }}"
+    state: restarted

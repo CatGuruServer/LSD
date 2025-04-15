@@ -1,0 +1,26 @@
+---
+- name: Ensure prometheus directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ prometheus_config_dir }}" }
+    - { path: "{{ prometheus_data_dir }}" }
+
+- name: Deploy prometheus Docker Compose file
+  template:
+    src: prometheus-compose.yml.j2
+    dest: "{{ prometheus_compose_path }}"
+  notify: 
+    - Restart prometheus
+
+- name: Launch prometheus using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ prometheus_compose_dir }}"
+    files:
+      - "{{ prometheus_compose_path }}"
+    state: started

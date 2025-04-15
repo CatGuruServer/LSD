@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  audiobookshelf:
+    image: advplyr/audiobookshelf
+    container_name: audiobookshelf
+    restart: unless-stopped
+    volumes:
+      - {{ audiobookshelf_config_dir }}:/config
+      - {{ audiobookshelf_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - europe/london

@@ -1,0 +1,7 @@
+---
+- name: Restart exportarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ exportarr_compose_dir }}"
+    files:
+      - "{{ exportarr_compose_path }}"
+    state: restarted

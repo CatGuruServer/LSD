@@ -1,0 +1,11 @@
+services:
+  speedtest:
+    image: henrywhitaker3/speedtest-tracker
+    container_name: speedtest
+    restart: unless-stopped
+    volumes:
+      - {{ speedtest_config_dir }}:/config
+    ports:
+      - "8765:80"
+    environment:
+      - TZ=Europe/London

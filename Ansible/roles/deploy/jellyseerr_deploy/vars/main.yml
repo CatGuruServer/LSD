@@ -1,0 +1,5 @@
+---
+jellyseerr_config_dir: "{{ config_base_dir }}/jellyseerr"
+jellyseerr_compose_dir: "{{ compose_base_dir }}/jellyseerr"
+jellyseerr_compose_path: "{{ jellyseerr_compose_dir }}/docker-compose.yml"
+jellyseerr_data_dir: "{{ jellyseerr_config_dir }}/data"

@@ -1,0 +1,7 @@
+---
+jellyfin_config_dir: "{{ config_base_dir }}/jellyfin"
+jellyfin_data_dir: "{{ media_base_dir }}/Media"
+jellyfin_compose_dir: "{{ compose_base_dir }}/jellyfin"
+jellyfin_compose_path: "{{ jellyfin_compose_dir }}/docker-compose.yml"
+jellyfin_cache_dir: "{{jellyfin_config_dir}}/cache"
+jellyfin_media_dir: "{{media_base_dir}}"

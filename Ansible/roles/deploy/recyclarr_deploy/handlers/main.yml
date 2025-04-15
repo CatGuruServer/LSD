@@ -1,0 +1,7 @@
+---
+- name: Restart recyclarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ recyclarr_compose_dir }}"
+    files:
+      - "{{ recyclarr_compose_path }}"
+    state: restarted

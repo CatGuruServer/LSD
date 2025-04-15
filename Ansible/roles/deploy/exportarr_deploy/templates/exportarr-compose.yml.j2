@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  exportarr:
+    image: <replace-with-image>
+    container_name: exportarr
+    restart: unless-stopped
+    volumes:
+      - {{ exportarr_config_dir }}:/config
+      - {{ exportarr_data_dir }}:/data
+    ports:
+      - "1234:1234"  # Replace with actual ports
+    environment:
+      - TZ=UTC

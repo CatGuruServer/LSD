@@ -1,0 +1,12 @@
+services:
+  jfa-go:
+    image: hrfee/jfa-go
+    container_name: jfa-go
+    restart: unless-stopped
+    volumes:
+      - {{ jfa_go_config_dir }}:/config
+      - {{ jfa_go_data_dir }}:/data
+    ports:
+      - "8056:8056"  # Replace with actual ports
+    environment:
+      - TZ=UTC

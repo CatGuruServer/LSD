@@ -1,0 +1,7 @@
+---
+- name: Restart readarr
+  community.docker.docker_compose_v2:
+    project_src: "{{ readarr_compose_dir }}"
+    files:
+      - "{{ readarr_compose_path }}"
+    state: restarted

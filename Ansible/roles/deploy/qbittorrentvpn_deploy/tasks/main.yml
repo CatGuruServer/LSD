@@ -1,0 +1,26 @@
+---
+- name: Ensure qbittorrentvpn directories exist with proper permissions
+  file:
+    path: "{{ qbittorrentvpn_compose_dir }}"
+    state: directory
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+    recurse: true
+  loop:
+    - { path: "{{ qbittorrentvpn_config_dir }}" }
+    - { path: "{{ qbittorrentvpn_data_dir }}" }
+
+- name: Deploy qbittorrentvpn Docker Compose file
+  template:
+    src: qbittorrentvpn-compose.yml.j2
+    dest: "{{ qbittorrentvpn_compose_path }}"
+  notify: 
+    - Restart qbittorrentvpn
+
+- name: Launch qbittorrentvpn using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ qbittorrentvpn_compose_dir }}"
+    files:
+      - "{{ qbittorrentvpn_compose_path }}"
+    state: present

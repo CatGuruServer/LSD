@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    volumes:
+      - {{ lidarr_config_dir }}:/config
+      - {{ lidarr_data_dir }}:/data
+    ports:
+      - "8686:8686"  # Replace with actual ports
+    environment:
+      - TZ=Europe/London

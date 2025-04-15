@@ -1,0 +1,24 @@
+---
+- name: Ensure Cockpit directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "0755"
+    owner: "root"
+    group: "root"
+  loop:
+    - { path: "{{ cockpit_config_dir }}" }
+
+- name: Deploy Cockpit Docker Compose file
+  template:
+    src: cockpit-compose.yml.j2
+    dest: "{{ cockpit_compose_path }}"
+  notify:
+    - Restart Cockpit
+
+- name: Launch Cockpit using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ cockpit_compose_dir }}"
+    files:
+      - "{{ cockpit_compose_path }}"
+    state: started

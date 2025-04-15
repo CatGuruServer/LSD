@@ -1,0 +1,26 @@
+---
+- name: Ensure declutarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ declutarr_config_dir }}" }
+    - { path: "{{ declutarr_data_dir }}" }
+
+- name: Deploy declutarr Docker Compose file
+  template:
+    src: declutarr-compose.yml.j2
+    dest: "{{ declutarr_compose_path }}"
+  notify: 
+    - Restart declutarr
+
+- name: Launch declutarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ declutarr_compose_dir }}"
+    files:
+      - "{{ declutarr_compose_path }}"
+    state: started

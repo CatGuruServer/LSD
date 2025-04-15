@@ -1,0 +1,24 @@
+---
+- name: Ensure Speedtest Tracker directories exist with proper permissions
+  file:
+    path: "{{ speedtest_compose_dir }}"
+    state: directory
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+  loop:
+    - { path: "{{ speedtest_config_dir }}" }
+
+- name: Deploy Speedtest Tracker Docker Compose file
+  template:
+    src: speedtest-compose.yml.j2
+    dest: "{{ speedtest_compose_path }}"
+  notify:
+    - Restart Speedtest Tracker
+
+- name: Launch Speedtest Tracker using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ speedtest_compose_dir }}"
+    files:
+      - "{{ speedtest_compose_path }}"
+    state: present

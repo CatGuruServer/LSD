@@ -1,0 +1,26 @@
+---
+- name: Ensure exportarr directories exist with proper permissions
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('0755') }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    recurse: true
+  loop:
+    - { path: "{{ exportarr_config_dir }}" }
+    - { path: "{{ exportarr_data_dir }}" }
+
+- name: Deploy exportarr Docker Compose file
+  template:
+    src: exportarr-compose.yml.j2
+    dest: "{{ exportarr_compose_path }}"
+  notify: 
+    - Restart exportarr
+
+- name: Launch exportarr using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ exportarr_compose_dir }}"
+    files:
+      - "{{ exportarr_compose_path }}"
+    state: started

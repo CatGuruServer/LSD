@@ -1,0 +1,26 @@
+---
+- name: Ensure jfa-go directories exist with proper permissions
+  file:
+    path: "{{ jfa_go_compose_dir }}"
+    state: directory
+    mode: "0755"
+    owner: "catguru"
+    group: "catguru"
+    recurse: true
+  loop:
+    - { path: "{{ jfa_go_config_dir }}" }
+    - { path: "{{ jfa_go_data_dir }}" }
+
+- name: Deploy jfa-go Docker Compose file
+  template:
+    src: jfa-go-compose.yml.j2
+    dest: "{{ jfa_go_compose_path }}"
+  notify: 
+    - Restart jfa-go
+
+- name: Launch jfa-go using Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ jfa_go_compose_dir }}"
+    files:
+      - "{{ jfa_go_compose_path }}"
+    state: present

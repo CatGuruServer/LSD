@@ -1,0 +1,10 @@
+services:
+  recyclarr:
+    image: recyclarr/recyclarr
+    container_name: recyclarr
+    restart: unless-stopped
+    volumes:
+      - {{ recyclarr_config_dir }}:/config
+      - {{ recyclarr_data_dir }}:/data
+    environment:
+      - TZ=Europe/London
