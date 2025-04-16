@@ -1,0 +1,61 @@
+- name: Copy shared ARR API key retriever script
+  ansible.builtin.copy:
+    src: get_arr_api_key.py
+    dest: /usr/local/bin/get_arr_api_key.py
+    mode: '0755'
+
+
+- name: Retrieve Radarr API key
+  ansible.builtin.command: >
+    python3 /usr/local/bin/get_arr_api_key.py
+  environment:
+    APP_NAME: "radarr"
+    APP_URL: "{{ radarr_url }}"
+    KEY_OUTPUT_PATH: "{{ central_key_dir }}/radarr.key"
+  register: radarr_key_output
+
+- name: Show Radarr key fetch result
+  ansible.builtin.debug:
+    var: radarr_key_output.stdout
+
+
+- name: Retrieve Sonarr API key
+  ansible.builtin.command: >
+    python3 /usr/local/bin/get_arr_api_key.py
+  environment:
+    APP_NAME: "sonarr"
+    APP_URL: "{{ sonarr_url }}"
+    KEY_OUTPUT_PATH: "{{ central_key_dir }}/sonarr.key"
+  register: sonarr_key_output
+
+- name: Show Sonarr key fetch result
+  ansible.builtin.debug:
+    var: sonarr_key_output.stdout
+
+
+- name: Retrieve Lidarr API key
+  ansible.builtin.command: >
+    python3 /usr/local/bin/get_arr_api_key.py
+  environment:
+    APP_NAME: "lidarr"
+    APP_URL: "{{ lidarr_url }}"
+    KEY_OUTPUT_PATH: "{{ central_key_dir }}/lidarr.key"
+  register: lidarr_key_output
+
+- name: Show Lidarr key fetch result
+  ansible.builtin.debug:
+    var: lidarr_key_output.stdout
+
+
+- name: Retrieve Readarr API key
+  ansible.builtin.command: >
+    python3 /usr/local/bin/get_arr_api_key.py
+  environment:
+    APP_NAME: "readarr"
+    APP_URL: "{{ readarr_url }}"
+    KEY_OUTPUT_PATH: "{{ central_key_dir }}/readarr.key"
+  register: readarr_key_output
+
+- name: Show Readarr key fetch result
+  ansible.builtin.debug:
+    var: readarr_key_output.stdout
