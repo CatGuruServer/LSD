@@ -1,4 +1,17 @@
 ---
+# Check if Docker service is running
+- name: Check if Docker service is running
+  ansible.builtin.service_facts:
+  when: not docker_installed  # Skip if Docker is already installed
+
+# Ensure Docker service is running
+- name: Ensure Docker service is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  when: not docker_installed  # Skip if Docker is already installed
+  
 - name: Ensure declutarr directories exist with proper permissions
   file:
     path: "{{ item.path }}"

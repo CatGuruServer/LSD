@@ -43,35 +43,41 @@ These services are deployed using **Docker Compose**, with **Ansible automating 
 - SSH access to the server
 - [Ansible](https://docs.ansible.com/) installed on your local machine
 
-### Installing Ansible on Your Local Machine
+---
 
-Before deploying the CatguruServer stack, ensure that Ansible is installed on your local machine. Follow these steps to install Ansible:
+### New Configuration and Variables
 
-1. **Update the package list:**
+#### Global Variables
+The following global variables are used across roles:
 
-   ```bash
-   sudo apt update
-   ```
+- **`keygen_location`**: Directory where the API key generation script is stored (default: `/opt/api_gen`).
+- **`key_dir`**: Directory where API keys are stored (default: `/opt/apikeys`).
+- **`default_owner`**: Default owner for files and directories (e.g., `catguru`).
+- **`default_group`**: Default group for files and directories (e.g., `catguru`).
 
-2. **Install required dependencies:**
+#### Role-Specific Variables
+Each role (e.g., `radarr_deploy`, `sonarr_deploy`) uses the following variables:
 
-   ```bash
-   sudo apt install software-properties-common
-   ```
+- **`radarr_owner`** / **`sonarr_owner`**: Owner for Radarr/Sonarr-related files and directories (inherits from `default_owner`).
+- **`radarr_group`** / **`sonarr_group`**: Group for Radarr/Sonarr-related files and directories (inherits from `default_group`).
+- **`radarr_compose_dir`** / **`sonarr_compose_dir`**: Directory for Docker Compose files.
+- **`radarr_config_dir`** / **`sonarr_config_dir`**: Directory for configuration files.
+- **`radarr_api_key`** / **`sonarr_api_key`**: API key for Radarr/Sonarr, dynamically generated and stored in `{{ key_dir }}`.
 
-3. **Add the Ansible PPA repository:**
+---
 
-   ```bash
-   sudo add-apt-repository --yes --update ppa:ansible/ansible
-   ```
+### API Key Management
 
-4. **Install Ansible:**
+API keys for services like Radarr and Sonarr are automatically generated and stored securely. The process is as follows:
 
-   ```bash
-   sudo apt install ansible
-   ```
+1. **API Key Generation Script**:
+   - The script `generate_api_key.py` is copied to the server (if not already present) and executed to generate a 32-character API key.
 
-Once Ansible is installed, you can proceed with the deployment steps outlined below.
+2. **Storage**:
+   - API keys are stored in the directory specified by `key_dir` (default: `/opt/apikeys`).
+
+3. **Usage**:
+   - The API keys are injected into the Docker Compose templates using Ansible's `lookup('file', ...)` function.
 
 ---
 
@@ -81,7 +87,7 @@ Once Ansible is installed, you can proceed with the deployment steps outlined be
 
    ```bash
    git clone https://github.com/sirbac/LSD.git
-   cd CatguruServer
+   cd LSD
    ```
 
 2. **Configure Inventory**

@@ -7,11 +7,16 @@
         cmd: ansible-galaxy collection install -r /home/catguru/LSD/Ansible/requirements.yml
       changed_when: false
 
-- name: Install Docker on Ubuntu
+- name: Check and install Docker
   hosts: all
   become: true
   roles:
-    - install/docker_install
+    - docker_check
+
+- name: Deploy applications using Docker
+  hosts: all
+  become: true
+  roles:
     - deploy/portainer_deploy
     - deploy/jellyfin_deploy
     - deploy/radarr_deploy

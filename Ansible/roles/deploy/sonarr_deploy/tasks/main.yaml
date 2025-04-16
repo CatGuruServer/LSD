@@ -1,30 +1,16 @@
 ---
-# Check if docker-compose is already installed
-- name: Check if docker-compose is already installed
-  ansible.builtin.command:
-    cmd: docker-compose --version  # Check if docker-compose is installed by running the version command
-  register: docker_compose_check   # Register the result of the command
-  failed_when: false               # Do not fail if docker-compose is not installed
-  changed_when: false              # Do not mark the task as changed
-
-# Ensure docker-compose is installed (if not already installed)
-- name: Ensure docker-compose is installed
-  ansible.builtin.package:
-    name: docker-compose
-    state: present
-  when: docker_compose_check.rc is not defined or docker_compose_check.rc != 0  # Only run if docker-compose is not installed
-
 # Check if Docker service is running
 - name: Check if Docker service is running
-  ansible.builtin.service_facts:  # Gather facts about the services running on the target machine
+  ansible.builtin.service_facts:
+  when: not docker_installed  # Skip if Docker is already installed
 
-# Ensure Docker service is running (if not already running)
+# Ensure Docker service is running
 - name: Ensure Docker service is running
   ansible.builtin.service:
     name: docker
     state: started
     enabled: true
-  when: "'docker' not in ansible_facts.services or ansible_facts.services['docker'].state != 'running'"  # Only run if Docker is not running
+  when: not docker_installed  # Skip if Docker is already installedg
 
 # Setup Sonarr directory
 - name: Setup Sonarr directory

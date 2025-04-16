@@ -1,28 +1,16 @@
 ---
-# Ensure docker-compose is installed on the target machine
-- name: Check if docker-compose is already installed
-  ansible.builtin.command:
-    cmd: docker-compose --version  # Check if docker-compose is installed by running the version command
-  register: docker_compose_check   # Register the result of the command
-  failed_when: false               # Do not fail if docker-compose is not installed
-  changed_when: false              # Do not mark the task as changed
-
-- name: Ensure docker-compose is installed (if not already installed)
-  ansible.builtin.package:
-    name: docker-compose           # Install the docker-compose package
-    state: present                 # Ensure the package is installed
-  when: docker_compose_check.rc is not defined or docker_compose_check.rc != 0  # Only run if docker-compose is not installed
-
-# Ensure the Docker service is running and enabled to start on boot
+# Check if Docker service is running
 - name: Check if Docker service is running
-  ansible.builtin.service_facts:  # Gather facts about the services running on the target machine
+  ansible.builtin.service_facts:
+  when: not docker_installed  # Skip if Docker is already installed
 
-- name: Ensure Docker service is running (if not already running)
+# Ensure Docker service is running
+- name: Ensure Docker service is running
   ansible.builtin.service:
-    name: docker                  # Name of the Docker service
-    state: started                # Ensure the service is started
-    enabled: true                 # Ensure the service is enabled to start on boot
-  when: "'docker' not in ansible_facts.services or ansible_facts.services['docker'].state != 'running'"  # Only run if Docker is not running
+    name: docker
+    state: started
+    enabled: true
+  when: not docker_installed  # Skip if Docker is already installed
 
 # Ensure required directories exist on the target machine
 - name: Ensure required directories exist

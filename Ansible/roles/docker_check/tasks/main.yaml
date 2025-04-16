@@ -1,0 +1,26 @@
+---
+# Check if Docker is installed
+- name: Check if Docker is installed
+  ansible.builtin.command:
+    cmd: docker --version
+  register: docker_check_result
+  failed_when: false  # Do not fail if Docker is not installed
+  changed_when: false  # Do not mark the task as changed
+
+# Set a fact if Docker is installed
+- name: Set fact if Docker is installed
+  ansible.builtin.set_fact:
+    docker_installed: true
+  when: docker_check_result.rc == 0
+
+# Install Docker if not installed
+- name: Install Docker if not installed
+  include_role:
+    name: install/docker_install
+  when: docker_check_result.rc != 0
+
+# Error if Docker is not installed and the role is run independently
+- name: Error if Docker is not installed and role is run independently
+  ansible.builtin.fail:
+    msg: "Docker is not installed. Please run the install/docker_install role."
+  when: docker_check_result.rc != 0 and ansible_run_tags == ['docker_check']
