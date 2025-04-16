@@ -4,7 +4,7 @@
 radarr_config_dir: "{{ config_base_dir }}/radarr"  # Base directory for Radarr's configuration files
 
 # Directory for Radarr data (e.g., movies)
-radarr_data_dir: "{{ media_base_dir }}/Movies"  # Directory where Radarr will manage movie files
+radarr_data_dir: "{{ media_base_dir }}"  # Directory where Radarr will manage movie files
 
 # Directory for Radarr Docker Compose files
 radarr_compose_dir: "{{ compose_base_dir }}/radarr"  # Directory to store the Docker Compose file for Radarr
