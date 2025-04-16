@@ -1,25 +1,37 @@
 ---
 # Ensure docker-compose is installed on the target machine
-- name: Ensure docker-compose is installed
+- name: Check if docker-compose is already installed
+  ansible.builtin.command:
+    cmd: docker-compose --version  # Check if docker-compose is installed by running the version command
+  register: docker_compose_check   # Register the result of the command
+  failed_when: false               # Do not fail if docker-compose is not installed
+  changed_when: false              # Do not mark the task as changed
+
+- name: Ensure docker-compose is installed (if not already installed)
   ansible.builtin.package:
-    name: docker-compose
-    state: present
+    name: docker-compose           # Install the docker-compose package
+    state: present                 # Ensure the package is installed
+  when: docker_compose_check.rc is not defined or docker_compose_check.rc != 0  # Only run if docker-compose is not installed
 
 # Ensure the Docker service is running and enabled to start on boot
-- name: Ensure Docker service is running
+- name: Check if Docker service is running
+  ansible.builtin.service_facts:  # Gather facts about the services running on the target machine
+
+- name: Ensure Docker service is running (if not already running)
   ansible.builtin.service:
-    name: docker
-    state: started
-    enabled: true
+    name: docker                  # Name of the Docker service
+    state: started                # Ensure the service is started
+    enabled: true                 # Ensure the service is enabled to start on boot
+  when: "'docker' not in ansible_facts.services or ansible_facts.services['docker'].state != 'running'"  # Only run if Docker is not running
 
 # Ensure required directories exist on the target machine
 - name: Ensure required directories exist
   ansible.builtin.file:
-    path: "{{ item }}"  # Iterate over the list of directories
-    state: directory    # Ensure the path is a directory
-    mode: '0755'        # Set permissions to 0755
-    owner: catguru      # Set the owner to 'catguru'
-    group: catguru      # Set the group to 'catguru'
+    path: "{{ item }}"            # Iterate over the list of directories
+    state: directory              # Ensure the path is a directory
+    mode: '0755'                  # Set permissions to 0755
+    owner: "{{ radarr_owner }}"   # Use the Radarr-specific owner variable
+    group: "{{ radarr_group }}"   # Use the Radarr-specific group variable
   loop:
     - "{{ radarr_compose_dir }}"  # Directory for Radarr Docker Compose files
     - "{{ radarr_config_dir }}"   # Directory for Radarr configuration files
@@ -50,27 +62,11 @@
 - name: Generate Radarr API key
   command: >
     python3 {{ keygen_location }}/generate_api_key.py  
-    radarr                                            
-    "{{ key_dir }}"                                   
+    radarr                                             
+    "{{ key_dir }}"                                    
   register: radarr_key_output                         # Register the output of the command
   changed_when: "'API key saved' in radarr_key_output.stdout"  # Mark as changed if the key was saved
   when: not radarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
-
-# Debug the output of the Radarr API key generation task
-- name: Debug Radarr API key generation output
-  debug:
-    var: radarr_key_output.stdout  # Output the result of the key generation
-  when: radarr_key_output is defined  # Only run if the key generation task was executed
-
-# Debug Radarr API key file existence
-- name: Debug Radarr API key file existence
-  ansible.builtin.stat:
-    path: "{{ key_dir }}/radarr_api.key"
-  register: debug_radarr_api_key_stat
-
-- name: Output Radarr API key file existence
-  debug:
-    var: debug_radarr_api_key_stat
 
 # Fetch the Radarr API key from the remote machine to the control node
 - name: Fetch Radarr API key from the remote machine to the control node
@@ -85,8 +81,8 @@
     src: "templates/docker_compose.yaml.j2"  # Source template file
     dest: "{{ radarr_compose_path }}"        # Destination path for the Docker Compose file
     mode: '0755'                             # Set permissions to 0755
-    owner: catguru                           # Set the owner to 'catguru'
-    group: catguru                           # Set the group to 'catguru'
+    owner: "{{ radarr_owner }}"              # Use the Radarr-specific owner variable
+    group: "{{ radarr_group }}"              # Use the Radarr-specific group variable
   notify:
     - Restart Radarr  # Notify the handler to restart Radarr if the file changes
 

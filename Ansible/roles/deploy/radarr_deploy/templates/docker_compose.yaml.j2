@@ -1,15 +1,15 @@
 services:
   radarr:
-    image: linuxserver/radarr
-    container_name: radarr
+    image: linuxserver/radarr  # Docker image for Radarr from the LinuxServer repository
+    container_name: radarr     # Name of the Radarr container
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ={{ timezone }}
-      - RADARR__AUTH__APIKEY={{ lookup('file', './radarr_api.key') }}
+      - PUID=1000              # User ID for permissions inside the container
+      - PGID=1000              # Group ID for permissions inside the container
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - RADARR__AUTH__APIKEY={{ lookup('file', './radarr_api.key') }}  # API key for Radarr, read from a local file
     volumes:
-      - "{{ radarr_config_dir }}:/config"
-      - "{{ radarr_data_dir }}:/data"
+      - "{{ radarr_config_dir }}:/config"  # Mount the Radarr configuration directory
+      - "{{ radarr_data_dir }}:/data"      # Mount the Radarr data directory (e.g., for movies)
     ports:
-      - "7878:7878"
-    restart: unless-stopped
+      - "7878:7878"           # Map port 7878 on the host to port 7878 in the container
+    restart: unless-stopped   # Restart the container unless it is explicitly stopped
