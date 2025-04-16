@@ -1,0 +1,20 @@
+- name: Install AMP with complete interactive automation
+  ansible.builtin.expect:
+    command: bash -c "wget -qO- https://getamp.sh | bash"
+    responses:
+      'Username \[admin\]:' : "{{ amp_username }}"
+      'Password:' : "{{ amp_password }}"
+      'Confirm Password:' : "{{ amp_password }}"
+      'Would you like to isolate.*Docker.*\[y/N\]' : "{{ 'y' if amp_use_docker else 'n' }}"
+      'Will you be running Minecraft servers.*\[Y/n\]' : "{{ 'y' if amp_minecraft else 'n' }}"
+      'Will you be running applications that rely on SteamCMD.*\[Y/n\]' : "{{ 'y' if amp_steamcmd else 'n' }}"
+      'Enable HTTPS\?.*\[y/N\]' : "{{ 'y' if amp_use_https else 'n' }}"
+      'Domain:' : "{{ amp_domain if amp_use_https else '' }}"
+      'Email:' : "{{ amp_email if amp_use_https else '' }}"
+      'Press any key to continue once you have done this.*' : ''
+      'Press any key to continue.*' : ''
+      'Ready to install AMP.*Press ENTER to continue.*' : ''
+      'Press Enter to install.*' : ''
+    timeout: 300
+  become: true
+  #notify: Restart AMP Service

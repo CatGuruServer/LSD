@@ -1,0 +1,5 @@
+- name: Restart AMP Service
+  ansible.builtin.systemd:
+    name: ampinstmgr
+    state: restarted
+    enabled: true
