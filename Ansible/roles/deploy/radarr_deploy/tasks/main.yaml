@@ -1,58 +1,82 @@
 ---
+# Ensure docker-compose is installed on the target machine
 - name: Ensure docker-compose is installed
   ansible.builtin.package:
     name: docker-compose
     state: present
 
+# Ensure the Docker service is running and enabled to start on boot
 - name: Ensure Docker service is running
   ansible.builtin.service:
     name: docker
     state: started
     enabled: true
 
+# Ensure required directories exist on the target machine
 - name: Ensure required directories exist
   ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    mode: '0755'
-    owner: catguru
-    group: catguru
+    path: "{{ item }}"  # Iterate over the list of directories
+    state: directory    # Ensure the path is a directory
+    mode: '0755'        # Set permissions to 0755
+    owner: catguru      # Set the owner to 'catguru'
+    group: catguru      # Set the group to 'catguru'
   loop:
-    - "{{ radarr_compose_dir }}"
-    - "{{ radarr_config_dir }}"
-    - "{{ key_dir }}"  # Ensure the global key directory exists
+    - "{{ radarr_compose_dir }}"  # Directory for Radarr Docker Compose files
+    - "{{ radarr_config_dir }}"   # Directory for Radarr configuration files
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Copy the API key generation script to the target machine
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
   ansible.builtin.copy:
-    src: "roles/config/api_gen/generate_api_key.py"
-    dest: "/opt/api_gen/generate_api_key.py"
-    mode: '0755'
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: '0755'                                     # Set permissions to 0755
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
 
+# Check if the Radarr API key file already exists
+- name: Check if Radarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/radarr_api.key"  # Path to the Radarr API key file
+  register: radarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Radarr API key if it doesn't already exist
 - name: Generate Radarr API key
   command: >
-    python3 /opt/api_gen/generate_api_key.py
-    radarr
-    "{{ key_dir }}"
-  register: radarr_key_output
-  changed_when: "'API key saved' in radarr_key_output.stdout"
+    python3 {{ keygen_location }}/generate_api_key.py  
+    radarr                                            
+    "{{ key_dir }}"                                   
+  register: radarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in radarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not radarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
 
+# Debug the output of the Radarr API key generation task
 - name: Debug Radarr API key generation output
   debug:
-    var: radarr_key_output.stdout
+    var: radarr_key_output.stdout  # Output the result of the key generation
+  when: radarr_key_output is defined  # Only run if the key generation task was executed
 
+# Deploy the Radarr Docker Compose file using a template
 - name: Deploy Radarr Docker Compose file
   ansible.builtin.template:
-    src: "templates/docker_compose.yaml.j2"
-    dest: "{{ radarr_compose_path }}"
-    mode: '0755'
-    owner: catguru
-    group: catguru
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ radarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: '0755'                             # Set permissions to 0755
+    owner: catguru                           # Set the owner to 'catguru'
+    group: catguru                           # Set the group to 'catguru'
   notify:
-    - Restart Radarr
+    - Restart Radarr  # Notify the handler to restart Radarr if the file changes
 
+# Launch Radarr using Docker Compose
 - name: Launch Radarr using Docker Compose
   community.docker.docker_compose_v2:
-    project_src: "{{ radarr_compose_dir }}"
+    project_src: "{{ radarr_compose_dir }}"  # Path to the Docker Compose project
     files:
-      - "{{ radarr_compose_path }}"
-    state: present
+      - "{{ radarr_compose_path }}"          # Path to the Docker Compose file
+    state: present                           # Ensure the service is running

@@ -6,3 +6,6 @@ media_base_dir: "/mnt/md0/media"
 key_dir: "/opt/apikeys"
 # Timezone for all services
 timezone: "Europe/London"
+# Other stuff
+default_owner: "catguru"  # Default owner for all services
+default_group: "catguru"  # Default group for all services
