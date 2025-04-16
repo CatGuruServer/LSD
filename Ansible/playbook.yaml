@@ -1,11 +1,19 @@
 ---
-- name: Install required Ansible Galaxy collections
+- name: Install required Ansible Galaxy collections and roles
   hosts: localhost
   tasks:
-    - name: Install collections from requirements.yml
+    - name: Install collections and roles from requirements.yml
       ansible.builtin.command:
-        cmd: ansible-galaxy collection install -r ./requirements.yml
+        cmd: ansible-galaxy install -r ./requirements.yml
       changed_when: false
+
+- hosts: all
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Include upgrade
+      ansible.builtin.include_role:
+        name: upgrade
 
 - name: Check and install Docker
   hosts: all
