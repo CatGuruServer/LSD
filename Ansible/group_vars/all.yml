@@ -1,3 +1,8 @@
+#Base file locations
 config_base_dir: "/opt/configs"
 compose_base_dir: "/opt/compose"
 media_base_dir: "/mnt/md0/media"
+# Global directory for storing API keys
+key_dir: "/opt/apikeys"
+# Timezone for all services
+timezone: "Europe/London"

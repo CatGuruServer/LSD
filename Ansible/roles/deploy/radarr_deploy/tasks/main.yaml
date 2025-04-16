@@ -10,7 +10,7 @@
     state: started
     enabled: true
 
-- name: Ensure Radarr directories exist
+- name: Ensure required directories exist
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -20,6 +20,19 @@
   loop:
     - "{{ radarr_compose_dir }}"
     - "{{ radarr_config_dir }}"
+    - "{{ key_dir }}"  # Ensure the global key directory exists
+
+- name: Generate Radarr API key
+  command: >
+    python3 /config/api_gen/generate_api_key.py
+    radarr
+    "{{ key_dir }}"
+  register: radarr_key_output
+  changed_when: "'API key saved' in radarr_key_output.stdout"
+
+- name: Debug Radarr API key generation output
+  debug:
+    var: radarr_key_output.stdout
 
 - name: Deploy Radarr Docker Compose file
   ansible.builtin.template:

@@ -1,5 +1,0 @@
-central_key_dir: "/opt/central-api-keys"
-radarr_url: "http://localhost:7878"
-sonarr_url: "http://localhost:8989"
-lidarr_url: "http://localhost:8686"
-readarr_url: "http://localhost:8787"

@@ -1,15 +1,16 @@
+version: "3.8"
 services:
   radarr:
-    image: lscr.io/linuxserver/radarr
+    image: linuxserver/radarr
     container_name: radarr
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ={{ timezone }}
+      - RADARR_API_KEY={{ lookup('file', key_dir + '/radarr_api.key') }}
     volumes:
-      - {{ radarr_config_dir }}:/config
-      - {{ media_base_dir }}/Movies:/movies #optional
-      - {{ media_base_dir }}/Downloading:/downloads #optional
+      - "{{ radarr_config_dir }}:/config"
+      - "{{ radarr_media_dir }}:/media"
     ports:
-      - 7878:7878
+      - "7878:7878"
     restart: unless-stopped
