@@ -1,5 +1,5 @@
 ---
-- name: Start sonarr
+- name: Restart sonarr
   community.docker.docker_compose_v2:
     project_src: "{{ sonarr_compose_dir }}"
     files:
