@@ -72,7 +72,7 @@
     owner: "{{ sonarr_owner }}"              # Use the sonarr-specific owner variable
     group: "{{ sonarr_group }}"              # Use the sonarr-specific group variable
   notify:
-    - Restart sonarr  # Notify the handler to restart sonarr if the file changes
+    - Start sonarr  # Notify the handler to restart sonarr if the file changes
 
 # Run Sonarr docker-compose up
 - name: Run Sonarr docker-compose up

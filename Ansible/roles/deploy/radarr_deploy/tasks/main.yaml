@@ -72,7 +72,7 @@
     owner: "{{ radarr_owner }}"              # Use the Radarr-specific owner variable
     group: "{{ radarr_group }}"              # Use the Radarr-specific group variable
   notify:
-    - Restart Radarr  # Notify the handler to restart Radarr if the file changes
+    - Start Radarr  # Notify the handler to restart Radarr if the file changes
 
 # Launch Radarr using Docker Compose
 - name: Launch Radarr using Docker Compose
