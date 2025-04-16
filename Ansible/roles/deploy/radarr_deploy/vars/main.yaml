@@ -1,7 +1,5 @@
 ---
-# Version of Radarr to deploy
-radarr_version: "latest"  # Use the latest version of the Radarr Docker image
-
+# Variables for Radarr deployment using Docker Compose
 # Directory for Radarr configuration files
 radarr_config_dir: "{{ config_base_dir }}/radarr"  # Base directory for Radarr's configuration files
 

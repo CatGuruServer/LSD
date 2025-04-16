@@ -1,7 +1,8 @@
-#Base file locations
+#File stuff
 config_base_dir: "/opt/configs"
 compose_base_dir: "/opt/compose"
 media_base_dir: "/mnt/md0/media"
+default_mode: '0755'  # Default file and directory permissions
 # Global directory for storing API keys
 key_dir: "/opt/apikeys"
 keygen_location: "/opt/api_gen"

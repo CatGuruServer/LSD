@@ -17,7 +17,7 @@
   ansible.builtin.file:
     path: "{{ item }}"            # Iterate over the list of directories
     state: directory              # Ensure the path is a directory
-    mode: '0755'                  # Set permissions to 0755
+    mode: "{{ default_mode }}"    # Use the global default mode variable
     owner: "{{ radarr_owner }}"   # Use the Radarr-specific owner variable
     group: "{{ radarr_group }}"   # Use the Radarr-specific group variable
   loop:
@@ -37,7 +37,7 @@
   ansible.builtin.copy:
     src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
     dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
-    mode: '0755'                                     # Set permissions to 0755
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
   when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
 
 # Check if the Radarr API key file already exists
@@ -68,7 +68,7 @@
   ansible.builtin.template:
     src: "templates/docker_compose.yaml.j2"  # Source template file
     dest: "{{ radarr_compose_path }}"        # Destination path for the Docker Compose file
-    mode: '0755'                             # Set permissions to 0755
+    mode: "{{ default_mode }}"               # Use the global default mode variable
     owner: "{{ radarr_owner }}"              # Use the Radarr-specific owner variable
     group: "{{ radarr_group }}"              # Use the Radarr-specific group variable
   notify:
