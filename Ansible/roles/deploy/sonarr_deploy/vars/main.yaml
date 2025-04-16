@@ -1,6 +1,8 @@
 ---
-sonarr_version: "latest"
 sonarr_config_dir: "{{ config_base_dir }}/sonarr"
 sonarr_data_dir: "{{ media_base_dir }}/Shows"
 sonarr_compose_dir: "{{ compose_base_dir }}/sonarr"
 sonarr_compose_path: "{{ sonarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Sonarr files and directories
+sonarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+sonarr_group: "{{ default_group }}"  # Use the global default group variable

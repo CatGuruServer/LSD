@@ -60,7 +60,7 @@
 - name: Fetch Radarr API key from the remote machine to the control node
   ansible.builtin.fetch:
     src: "{{ key_dir }}/radarr_api.key"  # Path to the API key file on the remote machine
-    dest: "./radarr_api.key"            # Destination path on the control node
+    dest: "./api/radarr_api.key"            # Destination path on the control node
     flat: yes                           # Save the file directly to the specified path
 
 # Deploy the Radarr Docker Compose file using a template
