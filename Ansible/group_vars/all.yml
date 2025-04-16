@@ -4,6 +4,7 @@ compose_base_dir: "/opt/compose"
 media_base_dir: "/mnt/md0/media"
 # Global directory for storing API keys
 key_dir: "/opt/apikeys"
+keygen_location: "/opt/api_gen"
 # Timezone for all services
 timezone: "Europe/London"
 # Other stuff
