@@ -4,7 +4,7 @@
   tasks:
     - name: Install collections from requirements.yml
       ansible.builtin.command:
-        cmd: ansible-galaxy collection install -r /home/catguru/LSD/Ansible/requirements.yml
+        cmd: ansible-galaxy collection install -r ./requirements.yml
       changed_when: false
 
 - name: Check and install Docker
