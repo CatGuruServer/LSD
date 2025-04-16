@@ -17,16 +17,16 @@
   hosts: all
   become: true
   roles:
-    - deploy/portainer_deploy
-    - deploy/jellyfin_deploy
-    - deploy/radarr_deploy
-    - deploy/sonarr_deploy
-    - deploy/prowlarr_deploy
-    - deploy/qbittorrentvpn_deploy
-    - deploy/jellyseerr_deploy
-    - deploy/lidarr_deploy
-    - deploy/audiobookshelf_deploy
-    - deploy/jfa-go_deploy
-    - deploy/recyclarr_deploy
-    - deploy/speedtest_tracker_deploy
-    - deploy/organizr_deploy
+    - deploy/starr/radarr_deploy
+    - deploy/starr/sonarr_deploy
+    - deploy/starr/prowlarr_deploy
+    - deploy/starr/jellyseerr_deploy
+    - deploy/starr/lidarr_deploy
+    - deploy/starr/recyclarr_deploy
+    - deploy/media/jellyfin_deploy
+    - deploy/media/qbittorrentvpn_deploy
+    - deploy/media/audiobookshelf_deploy
+    - deploy/media/jfa-go_deploy
+    - deploy/utils/speedtest_tracker_deploy
+    - deploy/utils/organizr_deploy
+    - deploy/utils/portainer_deploy
