@@ -1,5 +1,5 @@
 ---
-- name: Restart Recommendarr
+- name: Start recommendarr
   community.docker.docker_compose_v2:
     project_src: "{{ Recommendarr_compose_dir }}"
     files:

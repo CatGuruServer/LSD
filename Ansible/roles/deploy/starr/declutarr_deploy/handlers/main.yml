@@ -1,5 +1,5 @@
 ---
-- name: Restart declutarr
+- name: Start declutarr
   community.docker.docker_compose_v2:
     project_src: "{{ declutarr_compose_dir }}"
     files:

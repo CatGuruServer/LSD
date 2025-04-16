@@ -24,16 +24,57 @@
     - { path: "{{ recyclarr_compose_dir }}"}
     - { path: "{{ recyclarr_config_dir }}" }
     - { path: "{{ recyclarr_data_dir }}" }
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Deploy recyclarr Docker Compose file
-  template:
-    src: "templates/recyclarr_compose.yml.j2"
-    dest: "{{ recyclarr_compose_path }}"
-    mode: "0755"
-    owner: "catguru"
-    group: "catguru"
-  notify: 
-    - Restart recyclarr
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Recyclarr API key file already exists
+- name: Check if Recyclarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/recyclarr_api.key"  # Path to the Recyclarr API key file
+  register: recyclarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Recyclarr API key if it doesn't already exist
+- name: Generate Recyclarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    recyclarr                                             
+    "{{ key_dir }}"                                    
+  register: recyclarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in recyclarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not recyclarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Recyclarr API key from the remote machine to the control node
+- name: Fetch Recyclarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/recyclarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/recyclarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Recyclarr Docker Compose file using a template
+- name: Deploy Recyclarr Docker Compose file
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ recyclarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ recyclarr_owner }}"              # Use the Recyclarr-specific owner variable
+    group: "{{ recyclarr_group }}"              # Use the Recyclarr-specific group variable
+  notify:
+    - Start Recyclarr  # Notify the handler to restart Recyclarr if the file changes
+
 
 - name: Launch recyclarr using Docker Compose
   community.docker.docker_compose_v2:

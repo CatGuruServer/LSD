@@ -12,23 +12,67 @@
     enabled: true
   when: not docker_installed  # Skip if Docker is already installed
 
-- name: Setup Prowlarr directory
+# Ensure required directories exist on the target machine
+- name: Ensure required directories exist
   ansible.builtin.file:
-    path: "{{ prowlarr_compose_dir }}"
-    state: directory
-    mode: '0755'  # Optional file permissions
-    owner: catguru  # Optional ownership
-    group: catguru  # Optional group ownership
+    path: "{{ item }}"            # Iterate over the list of directories
+    state: directory              # Ensure the path is a directory
+    mode: "{{ default_mode }}"    # Use the global default mode variable
+    owner: "{{ prowlarr_owner }}"   # Use the Prowlarr-specific owner variable
+    group: "{{ prowlarr_group }}"   # Use the Prowlarr-specific group variable
+  loop:
+    - "{{ prowlarr_compose_dir }}"  # Directory for Prowlarr Docker Compose files
+    - "{{ prowlarr_config_dir }}"   # Directory for Prowlarr configuration files
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Deploy Prowlarr using Docker Compose
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Prowlarr API key file already exists
+- name: Check if Prowlarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/prowlarr_api.key"  # Path to the Prowlarr API key file
+  register: prowlarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Prowlarr API key if it doesn't already exist
+- name: Generate Prowlarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    prowlarr                                             
+    "{{ key_dir }}"                                    
+  register: prowlarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in prowlarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not prowlarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Prowlarr API key from the remote machine to the control node
+- name: Fetch Prowlarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/prowlarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/prowlarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Prowlarr Docker Compose file using a template
+- name: Deploy Prowlarr Docker Compose file
   ansible.builtin.template:
-    src: "templates/docker_compose.yaml.j2"
-    dest: "{{ prowlarr_compose_path }}"
-    mode: '0755'  # Optional file permissions
-    owner: catguru  # Optional ownership
-    group: catguru  # Optional group ownership
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ prowlarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ prowlarr_owner }}"              # Use the Prowlarr-specific owner variable
+    group: "{{ prowlarr_group }}"              # Use the Prowlarr-specific group variable
   notify:
-    - Start prowlarr
+    - Start Prowlarr  # Notify the handler to restart Prowlarr if the file changes
 
 - name: Run Prowlarr docker-compose up
   community.docker.docker_compose_v2:

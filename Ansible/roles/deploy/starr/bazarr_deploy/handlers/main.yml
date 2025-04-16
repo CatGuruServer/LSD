@@ -1,5 +1,5 @@
 ---
-- name: Restart Bazarr
+- name: Start bazarr
   community.docker.docker_compose_v2:
     project_src: "{{ bazarr_compose_dir }}"
     files:

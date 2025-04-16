@@ -1,5 +1,5 @@
 ---
-- name: Restart jellyseerr
+- name: Start jellyseerr
   community.docker.docker_compose_v2:
     project_src: "{{ jellyseerr_compose_dir }}"
     files:

@@ -12,24 +12,67 @@
     enabled: true
   when: not docker_installed  # Skip if Docker is already installed
   
-- name: Ensure lidarr directories exist with proper permissions
-  file:
-    path: "{{ lidarr_compose_dir }}"
-    state: directory
-    mode: "0755"
-    owner: "catguru"
-    group: "catguru"
-    recurse: true
+# Ensure required directories exist on the target machine
+- name: Ensure required directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"            # Iterate over the list of directories
+    state: directory              # Ensure the path is a directory
+    mode: "{{ default_mode }}"    # Use the global default mode variable
+    owner: "{{ lidarr_owner }}"   # Use the Lidarr-specific owner variable
+    group: "{{ lidarr_group }}"   # Use the Lidarr-specific group variable
   loop:
-    - { path: "{{ lidarr_config_dir }}" }
-    - { path: "{{ lidarr_data_dir }}" }
+    - "{{ lidarr_compose_dir }}"  # Directory for Lidarr Docker Compose files
+    - "{{ lidarr_config_dir }}"   # Directory for Lidarr configuration files
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Deploy lidarr Docker Compose file
-  template:
-    src: lidarr-compose.yml.j2
-    dest: "{{ lidarr_compose_path }}"
-  notify: 
-    - Restart lidarr
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Lidarr API key file already exists
+- name: Check if Lidarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/lidarr_api.key"  # Path to the Lidarr API key file
+  register: lidarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Lidarr API key if it doesn't already exist
+- name: Generate Lidarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    lidarr                                             
+    "{{ key_dir }}"                                    
+  register: lidarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in lidarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not lidarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Lidarr API key from the remote machine to the control node
+- name: Fetch Lidarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/lidarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/lidarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Lidarr Docker Compose file using a template
+- name: Deploy Lidarr Docker Compose file
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ lidarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ lidarr_owner }}"              # Use the Lidarr-specific owner variable
+    group: "{{ lidarr_group }}"              # Use the Lidarr-specific group variable
+  notify:
+    - Start Lidarr  # Notify the handler to restart Lidarr if the file changes
 
 - name: Launch lidarr using Docker Compose
   community.docker.docker_compose_v2:

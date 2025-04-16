@@ -23,13 +23,56 @@
   loop:
     - { path: "{{ exportarr_config_dir }}" }
     - { path: "{{ exportarr_data_dir }}" }
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Deploy exportarr Docker Compose file
-  template:
-    src: exportarr-compose.yml.j2
-    dest: "{{ exportarr_compose_path }}"
-  notify: 
-    - Restart exportarr
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Exportarr API key file already exists
+- name: Check if Exportarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/exportarr_api.key"  # Path to the Exportarr API key file
+  register: exportarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Exportarr API key if it doesn't already exist
+- name: Generate Exportarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    exportarr                                             
+    "{{ key_dir }}"                                    
+  register: exportarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in exportarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not exportarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Exportarr API key from the remote machine to the control node
+- name: Fetch Exportarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/exportarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/exportarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Exportarr Docker Compose file using a template
+- name: Deploy Exportarr Docker Compose file
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ exportarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ exportarr_owner }}"              # Use the Exportarr-specific owner variable
+    group: "{{ exportarr_group }}"              # Use the Exportarr-specific group variable
+  notify:
+    - Start Exportarr  # Notify the handler to restart Exportarr if the file changes
 
 - name: Launch exportarr using Docker Compose
   community.docker.docker_compose_v2:

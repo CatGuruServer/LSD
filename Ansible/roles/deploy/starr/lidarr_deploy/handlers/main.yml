@@ -1,5 +1,5 @@
 ---
-- name: Restart lidarr
+- name: Start lidarr
   community.docker.docker_compose_v2:
     project_src: "{{ lidarr_compose_dir }}"
     files:

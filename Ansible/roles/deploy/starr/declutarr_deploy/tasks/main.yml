@@ -23,13 +23,56 @@
   loop:
     - { path: "{{ declutarr_config_dir }}" }
     - { path: "{{ declutarr_data_dir }}" }
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
-- name: Deploy declutarr Docker Compose file
-  template:
-    src: declutarr-compose.yml.j2
-    dest: "{{ declutarr_compose_path }}"
-  notify: 
-    - Restart declutarr
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Declutarr API key file already exists
+- name: Check if Declutarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/declutarr_api.key"  # Path to the Declutarr API key file
+  register: declutarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Declutarr API key if it doesn't already exist
+- name: Generate Declutarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    declutarr                                             
+    "{{ key_dir }}"                                    
+  register: declutarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in declutarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not declutarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Declutarr API key from the remote machine to the control node
+- name: Fetch Declutarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/declutarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/declutarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Declutarr Docker Compose file using a template
+- name: Deploy Declutarr Docker Compose file
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ declutarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ declutarr_owner }}"              # Use the Declutarr-specific owner variable
+    group: "{{ declutarr_group }}"              # Use the Declutarr-specific group variable
+  notify:
+    - Start Declutarr  # Notify the handler to restart Declutarr if the file changes
 
 - name: Launch declutarr using Docker Compose
   community.docker.docker_compose_v2:

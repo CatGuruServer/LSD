@@ -1,5 +1,5 @@
 ---
-- name: Restart readarr
+- name: Start readarr
   community.docker.docker_compose_v2:
     project_src: "{{ readarr_compose_dir }}"
     files:

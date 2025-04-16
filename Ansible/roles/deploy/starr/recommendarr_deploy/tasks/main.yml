@@ -12,24 +12,67 @@
     enabled: true
   when: not docker_installed  # Skip if Docker is already installed
   
-- name: Ensure Recommendarr directories exist with proper permissions
-  file:
-    path: "{{ item.path }}"
-    state: directory
-    mode: "{{ item.mode | default('0755') }}"
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    recurse: true
+# Ensure required directories exist on the target machine
+- name: Ensure required directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"            # Iterate over the list of directories
+    state: directory              # Ensure the path is a directory
+    mode: "{{ default_mode }}"    # Use the global default mode variable
+    owner: "{{ recommendarr_owner }}"   # Use the Recommendarr-specific owner variable
+    group: "{{ recommendarr_group }}"   # Use the Recommendarr-specific group variable
   loop:
-    - { path: "{{ Recommendarr_config_dir }}" }
-    - { path: "{{ Recommendarr_data_dir }}" }
+    - "{{ recommendarr_compose_dir }}"  # Directory for Recommendarr Docker Compose files
+    - "{{ recommendarr_config_dir }}"   # Directory for Recommendarr configuration files
+    - "{{ key_dir }}"             # Global directory for storing API keys
+    - "{{ keygen_location }}"     # Directory for the API key generation script
 
+# Check if the API key generation script already exists on the target machine
+- name: Check if the API key generation script already exists
+  ansible.builtin.stat:
+    path: "{{ keygen_location }}/generate_api_key.py"  # Path to the script
+  register: api_gen_script_stat  # Register the result to check if the file exists
+
+# Copy the API key generation script to the target machine if it doesn't already exist
+- name: Copy the API key generation script to the target machine (if not already present)
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"  # Source path of the script
+    dest: "{{ keygen_location }}/generate_api_key.py"  # Destination path on the target machine
+    mode: "{{ default_mode }}"                       # Use the global default mode variable
+  when: not api_gen_script_stat.stat.exists          # Only copy if the script doesn't exist
+
+# Check if the Recommendarr API key file already exists
+- name: Check if Recommendarr API key already exists
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/recommendarr_api.key"  # Path to the Recommendarr API key file
+  register: recommendarr_api_key_stat           # Register the result to check if the file exists
+
+# Generate a new Recommendarr API key if it doesn't already exist
+- name: Generate Recommendarr API key
+  command: >
+    python3 {{ keygen_location }}/generate_api_key.py  
+    recommendarr                                             
+    "{{ key_dir }}"                                    
+  register: recommendarr_key_output                         # Register the output of the command
+  changed_when: "'API key saved' in recommendarr_key_output.stdout"  # Mark as changed if the key was saved
+  when: not recommendarr_api_key_stat.stat.exists           # Only run if the API key file doesn't exist
+
+# Fetch the Recommendarr API key from the remote machine to the control node
+- name: Fetch Recommendarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
+    src: "{{ key_dir }}/recommendarr_api.key"  # Path to the API key file on the remote machine
+    dest: "./api/recommendarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
+
+# Deploy the Recommendarr Docker Compose file using a template
 - name: Deploy Recommendarr Docker Compose file
-  template:
-    src: Recommendarr-compose.yml.j2
-    dest: "{{ Recommendarr_compose_path }}"
-  notify: 
-    - Restart Recommendarr
+  ansible.builtin.template:
+    src: "templates/docker_compose.yaml.j2"  # Source template file
+    dest: "{{ recommendarr_compose_path }}"        # Destination path for the Docker Compose file
+    mode: "{{ default_mode }}"               # Use the global default mode variable
+    owner: "{{ recommendarr_owner }}"              # Use the Recommendarr-specific owner variable
+    group: "{{ recommendarr_group }}"              # Use the Recommendarr-specific group variable
+  notify:
+    - Start Recommendarr  # Notify the handler to restart Recommendarr if the file changes
 
 - name: Launch Recommendarr using Docker Compose
   community.docker.docker_compose_v2:

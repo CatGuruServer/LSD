@@ -1,5 +1,17 @@
 ---
-bazarr_config_dir: "/opt/bazarr/config"
-bazarr_data_dir: "/opt/bazarr/data"
-bazarr_compose_dir: "/opt/bazarr"
-bazarr_compose_path: "/opt/bazarr/docker-compose.yml"
+# Variables for Bazarr deployment using Docker Compose
+# Directory for Bazarr configuration files
+bazarr_config_dir: "{{ config_base_dir }}/bazarr"  # Base directory for Bazarr's configuration files
+
+# Directory for Bazarr data (e.g., movies)
+bazarr_data_dir: "{{ media_base_dir }}"  # Directory where Bazarr will manage subtitles files
+
+# Directory for Bazarr Docker Compose files
+bazarr_compose_dir: "{{ compose_base_dir }}/bazarr"  # Directory to store the Docker Compose file for Bazarr
+
+# Full path to the Bazarr Docker Compose file
+bazarr_compose_path: "{{ bazarr_compose_dir }}/docker-compose.yml"  # Path to the specific Docker Compose file for Bazarr
+
+# Owner and group for Bazarr files and directories
+bazarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+bazarr_group: "{{ default_group }}"  # Use the global default group variable
