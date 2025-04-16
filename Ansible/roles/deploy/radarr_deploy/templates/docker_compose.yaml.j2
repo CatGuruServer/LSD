@@ -7,7 +7,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ={{ timezone }}
-      - RADARR_API_KEY={{ lookup('file', key_dir + '/radarr_api.key') }}
+      - API_KEY={{ lookup('file', key_dir + '/radarr_api.key') }}
     volumes:
       - "{{ radarr_config_dir }}:/config"
       - "{{ radarr_media_dir }}:/media"
