@@ -1,5 +1,8 @@
 ---
-Recommendarr_config_dir: "/opt/Recommendarr/config"
-Recommendarr_data_dir: "/opt/Recommendarr/data"
-Recommendarr_compose_dir: "/opt/Recommendarr"
-Recommendarr_compose_path: "/opt/Recommendarr/docker-compose.yml"
+recommendarr_config_dir: "{{ config_base_dir }}/recommendarr"
+recommendarr_data_dir: "{{ recommendarr_config_dir }}/data"
+recommendarr_compose_dir: "{{ compose_base_dir }}/recommendarr"
+recommendarr_compose_path: "{{ recommendarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Recommendarr files and directories
+recommendarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+recommendarr_group: "{{ default_group }}"  # Use the global default group variable

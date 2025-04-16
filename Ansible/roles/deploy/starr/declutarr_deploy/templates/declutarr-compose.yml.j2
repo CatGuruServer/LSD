@@ -10,4 +10,5 @@ services:
     ports:
       - "1234:1234"  # Replace with actual ports
     environment:
-      - TZ=UTC
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - DECLUTARR__AUTH__APIKEY={{ lookup('file', './api/declutarr_api.key') }}  # API key for Declutarr, read from a local file

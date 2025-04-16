@@ -1,5 +1,6 @@
----
-readarr_config_dir: "/opt/readarr/config"
-readarr_data_dir: "/opt/readarr/data"
-readarr_compose_dir: "/opt/readarr"
-readarr_compose_path: "/opt/readarr/docker-compose.yml"
+readarr_config_dir: "{{ config_base_dir }}/readarr"
+readarr_compose_dir: "{{ compose_base_dir }}/readarr"
+readarr_compose_path: "{{ readarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Readarr files and directories
+readarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+readarr_group: "{{ default_group }}"  # Use the global default group variable

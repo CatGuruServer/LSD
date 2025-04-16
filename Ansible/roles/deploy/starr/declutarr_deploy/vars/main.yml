@@ -1,5 +1,8 @@
 ---
-declutarr_config_dir: "/opt/declutarr/config"
-declutarr_data_dir: "/opt/declutarr/data"
-declutarr_compose_dir: "/opt/declutarr"
-declutarr_compose_path: "/opt/declutarr/docker-compose.yml"
+declutarr_config_dir: "{{ config_base_dir }}/declutarr"
+declutarr_data_dir: "{{ declutarr_config_dir }}/data"
+declutarr_compose_dir: "{{ compose_base_dir }}/declutarr"
+declutarr_compose_path: "{{ declutarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Declutarr files and directories
+declutarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+declutarr_group: "{{ default_group }}"  # Use the global default group variable

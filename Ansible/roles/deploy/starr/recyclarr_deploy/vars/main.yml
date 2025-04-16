@@ -3,3 +3,6 @@ recyclarr_config_dir: "{{ config_base_dir }}/recyclarr/config"
 recyclarr_data_dir: "{{ recyclarr_config_dir }}/data"
 recyclarr_compose_dir: "{{ compose_base_dir }}/recyclarr"
 recyclarr_compose_path: "{{ recyclarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Recyclarr files and directories
+recyclarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+recyclarr_group: "{{ default_group }}"  # Use the global default group variable

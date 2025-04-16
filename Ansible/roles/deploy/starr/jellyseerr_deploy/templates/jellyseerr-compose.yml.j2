@@ -10,4 +10,5 @@ services:
     ports:
       - "5055:5055"  # Replace with actual ports
     environment:
-      - TZ=Europe/London
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - JELLYSEERR__AUTH__APIKEY={{ lookup('file', './api/jellyseerr_api.key') }}  # API key for Jellyseerr, read from a local file

@@ -10,4 +10,5 @@ services:
     ports:
       - "1234:1234"  # Replace with actual ports
     environment:
-      - TZ=UTC
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - RECOMMENDARR__AUTH__APIKEY={{ lookup('file', './api/recommendarr_api.key') }}  # API key for Recommendarr, read from a local file

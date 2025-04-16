@@ -1,5 +1,8 @@
 ---
-exportarr_config_dir: "/opt/exportarr/config"
-exportarr_data_dir: "/opt/exportarr/data"
-exportarr_compose_dir: "/opt/exportarr"
-exportarr_compose_path: "/opt/exportarr/docker-compose.yml"
+exportarr_config_dir: "{{ config_base_dir }}/exportarr"
+exportarr_data_dir: "{{ exportarr_config_dir }}/data"
+exportarr_compose_dir: "{{ compose_base_dir }}/exportarr"
+exportarr_compose_path: "{{ exportarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Exportarr files and directories
+exportarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+exportarr_group: "{{ default_group }}"  # Use the global default group variable

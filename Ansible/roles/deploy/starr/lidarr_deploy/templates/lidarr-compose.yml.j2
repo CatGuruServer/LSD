@@ -8,6 +8,7 @@ services:
       - {{ lidarr_config_dir }}:/config
       - {{ lidarr_data_dir }}:/data
     ports:
-      - "8686:8686"  # Replace with actual ports
+      - "8686:8686"  
     environment:
-      - TZ=Europe/London
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - LIDARR__AUTH__APIKEY={{ lookup('file', './api/lidarr_api.key') }}  # API key for Lidarr, read from a local file

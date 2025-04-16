@@ -7,4 +7,5 @@ services:
       - {{ recyclarr_config_dir }}:/config
       - {{ recyclarr_data_dir }}:/data
     environment:
-      - TZ=Europe/London
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - RECYCLARR__AUTH__APIKEY={{ lookup('file', './api/recyclarr_api.key') }}  # API key for Recyclarr, read from a local file

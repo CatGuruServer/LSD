@@ -5,7 +5,8 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - PROWLARR__AUTH__APIKEY={{ lookup('file', './api/prowlarr_api.key') }}  # API key for Prowlarr, read from a local file
       - UMASK_SET=022
     volumes:
       - {{ prowlarr_config_dir }}:/config

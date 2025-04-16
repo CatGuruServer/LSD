@@ -1,5 +1,7 @@
 ---
-prowlarr_version: "latest"
 prowlarr_config_dir: "{{ config_base_dir }}/prowlarr"
-prowlarr_compose_dir: "{{ compose_base_dir }}/sonarr"
+prowlarr_compose_dir: "{{ compose_base_dir }}/prowlarr"
 prowlarr_compose_path: "{{ prowlarr_compose_dir }}/docker-compose.yml"
+# Owner and group for Prowlarr files and directories
+prowlarr_owner: "{{ default_owner }}"  # Use the global default owner variable
+prowlarr_group: "{{ default_group }}"  # Use the global default group variable

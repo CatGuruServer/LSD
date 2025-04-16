@@ -11,4 +11,4 @@ services:
       - "6767:6767"
     environment:
       - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
-      - BAZARR__AUTH__APIKEY={{ lookup('file', './api/bazarr_api.key') }}  # API key for Radarr, read from a local file
+      - BAZARR__AUTH__APIKEY={{ lookup('file', './api/bazarr_api.key') }}  # API key for Bazarr, read from a local file
