@@ -73,7 +73,7 @@
     owner: "{{ recyclarr_owner }}"              # Use the Recyclarr-specific owner variable
     group: "{{ recyclarr_group }}"              # Use the Recyclarr-specific group variable
   notify:
-    - Start Recyclarr  # Notify the handler to restart Recyclarr if the file changes
+    - Start recyclarr  # Notify the handler to restart Recyclarr if the file changes
 
 
 - name: Launch recyclarr using Docker Compose

@@ -71,7 +71,7 @@
     owner: "{{ bazarr_owner }}"              # Use the Bazarr-specific owner variable
     group: "{{ bazarr_group }}"              # Use the Bazarr-specific group variable
   notify:
-    - Start Bazarr  # Notify the handler to restart Bazarr if the file changes
+    - Start bazarr  # Notify the handler to restart Bazarr if the file changes
 
 - name: Launch Bazarr using Docker Compose
   community.docker.docker_compose_v2:

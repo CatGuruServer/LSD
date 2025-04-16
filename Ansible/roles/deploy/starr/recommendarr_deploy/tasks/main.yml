@@ -72,7 +72,7 @@
     owner: "{{ recommendarr_owner }}"              # Use the Recommendarr-specific owner variable
     group: "{{ recommendarr_group }}"              # Use the Recommendarr-specific group variable
   notify:
-    - Start Recommendarr  # Notify the handler to restart Recommendarr if the file changes
+    - Start recommendarr  # Notify the handler to restart Recommendarr if the file changes
 
 - name: Launch Recommendarr using Docker Compose
   community.docker.docker_compose_v2:

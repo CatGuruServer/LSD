@@ -72,7 +72,7 @@
     owner: "{{ readarr_owner }}"              # Use the Readarr-specific owner variable
     group: "{{ readarr_group }}"              # Use the Readarr-specific group variable
   notify:
-    - Start Readarr  # Notify the handler to restart Readarr if the file changes
+    - Start readarr  # Notify the handler to restart Readarr if the file changes
 - name: Launch readarr using Docker Compose
   community.docker.docker_compose_v2:
     project_src: "{{ readarr_compose_dir }}"

@@ -72,7 +72,7 @@
     owner: "{{ prowlarr_owner }}"              # Use the Prowlarr-specific owner variable
     group: "{{ prowlarr_group }}"              # Use the Prowlarr-specific group variable
   notify:
-    - Start Prowlarr  # Notify the handler to restart Prowlarr if the file changes
+    - Start prowlarr  # Notify the handler to restart Prowlarr if the file changes
 
 - name: Run Prowlarr docker-compose up
   community.docker.docker_compose_v2:

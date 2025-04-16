@@ -72,7 +72,7 @@
     owner: "{{ declutarr_owner }}"              # Use the Declutarr-specific owner variable
     group: "{{ declutarr_group }}"              # Use the Declutarr-specific group variable
   notify:
-    - Start Declutarr  # Notify the handler to restart Declutarr if the file changes
+    - Start declutarr  # Notify the handler to restart Declutarr if the file changes
 
 - name: Launch declutarr using Docker Compose
   community.docker.docker_compose_v2:

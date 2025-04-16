@@ -72,7 +72,7 @@
     owner: "{{ lidarr_owner }}"              # Use the Lidarr-specific owner variable
     group: "{{ lidarr_group }}"              # Use the Lidarr-specific group variable
   notify:
-    - Start Lidarr  # Notify the handler to restart Lidarr if the file changes
+    - Start lidarr  # Notify the handler to restart Lidarr if the file changes
 
 - name: Launch lidarr using Docker Compose
   community.docker.docker_compose_v2:

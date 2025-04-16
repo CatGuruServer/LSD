@@ -72,7 +72,7 @@
     owner: "{{ exportarr_owner }}"              # Use the Exportarr-specific owner variable
     group: "{{ exportarr_group }}"              # Use the Exportarr-specific group variable
   notify:
-    - Start Exportarr  # Notify the handler to restart Exportarr if the file changes
+    - Start exportarr  # Notify the handler to restart Exportarr if the file changes
 
 - name: Launch exportarr using Docker Compose
   community.docker.docker_compose_v2:

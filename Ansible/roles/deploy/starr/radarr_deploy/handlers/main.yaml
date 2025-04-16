@@ -1,6 +1,6 @@
 ---
 # Handler to restart the Radarr service using Docker Compose
-- name: Start Radarr
+- name: Start radarr
   community.docker.docker_compose_v2:
     project_src: "{{ radarr_compose_dir }}"  # Path to the Docker Compose project directory
     files:
