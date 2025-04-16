@@ -1,13 +1,56 @@
 services:
-  exportarr:
-    image: <replace-with-image>
-    container_name: exportarr
+  sonarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:v2.0
+    container_name: sonarr-exporter
+    command: ["sonarr"]
     restart: unless-stopped
     volumes:
-      - {{ exportarr_config_dir }}:/config
-      - {{ exportarr_data_dir }}:/data
+      - {{ exportarr_base_dir }}/sonarr/config:/config
+      - {{ exportarr_base_dir }}/sonarr/data:/data
     ports:
-      - "1234:1234"  # Replace with actual ports
+      - "9707:9707"
     environment:
-      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
-      - EXPORTARR__AUTH__APIKEY={{ lookup('file', './api/exportarr_api.key') }}  # API key for Exportarr, read from a local file
+      - TZ={{ timezone }}
+      - APIKEY={{ lookup('file', './api/sonarr_api.key') }}
+
+  radarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:v2.0
+    container_name: radarr-exporter
+    command: ["radarr"]
+    restart: unless-stopped
+    volumes:
+      - {{ exportarr_base_dir }}/radarr/config:/config
+      - {{ exportarr_base_dir }}/radarr/data:/data
+    ports:
+      - "9708:9708"
+    environment:
+      - TZ={{ timezone }}
+      - APIKEY={{ lookup('file', './api/radarr_api.key') }}
+
+  lidarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:v2.0
+    container_name: lidarr-exporter
+    command: ["lidarr"]
+    restart: unless-stopped
+    volumes:
+      - {{ exportarr_base_dir }}/lidarr/config:/config
+      - {{ exportarr_base_dir }}/lidarr/data:/data
+    ports:
+      - "9709:9709"
+    environment:
+      - TZ={{ timezone }}
+      - APIKEY={{ lookup('file', './api/lidarr_api.key') }}
+
+  readarr-exporter:
+    image: ghcr.io/onedr0p/exportarr:v2.0
+    container_name: readarr-exporter
+    command: ["readarr"]
+    restart: unless-stopped
+    volumes:
+      - {{ exportarr_base_dir }}/readarr/config:/config
+      - {{ exportarr_base_dir }}/readarr/data:/data
+    ports:
+      - "9713:9713"
+    environment:
+      - TZ={{ timezone }}
+      - APIKEY={{ lookup('file', './api/readarr_api.key') }}

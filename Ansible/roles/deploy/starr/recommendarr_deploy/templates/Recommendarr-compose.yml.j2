@@ -1,13 +1,13 @@
 services:
-  Recommendarr:
-    image: <replace-with-image>
-    container_name: Recommendarr
+  recommendarr:
+    image: tannermiddleton/recommendarr:latest
+    container_name: recommendarr
     restart: unless-stopped
     volumes:
-      - {{ Recommendarr_config_dir }}:/config
-      - {{ Recommendarr_data_dir }}:/data
+      - {{ recommendarr_config_dir }}:/config
+      - {{ recommendarr_data_dir }}:/data
     ports:
-      - "1234:1234"  # Replace with actual ports
+      - "1234:1234"  # Replace with the actual port if needed
     environment:
-      - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
+      - TZ={{ timezone }}  # Timezone for the container, dynamically set using the 'timezone' variable
       - RECOMMENDARR__AUTH__APIKEY={{ lookup('file', './api/recommendarr_api.key') }}  # API key for Recommendarr, read from a local file
