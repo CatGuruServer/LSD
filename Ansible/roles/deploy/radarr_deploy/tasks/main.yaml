@@ -62,6 +62,16 @@
     var: radarr_key_output.stdout  # Output the result of the key generation
   when: radarr_key_output is defined  # Only run if the key generation task was executed
 
+# Debug Radarr API key file existence
+- name: Debug Radarr API key file existence
+  ansible.builtin.stat:
+    path: "{{ key_dir }}/radarr_api.key"
+  register: debug_radarr_api_key_stat
+
+- name: Output Radarr API key file existence
+  debug:
+    var: debug_radarr_api_key_stat
+
 # Deploy the Radarr Docker Compose file using a template
 - name: Deploy Radarr Docker Compose file
   ansible.builtin.template:
