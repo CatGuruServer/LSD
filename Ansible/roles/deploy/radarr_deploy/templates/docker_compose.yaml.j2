@@ -5,8 +5,8 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
-      - RADARR_API_KEY={{ lookup('file', './radarr_api.key') }}
+      - TZ={{ timezone }}
+      - RADARR__AUTH__APIKEY={{ lookup('file', './radarr_api.key') }}
     volumes:
       - "{{ radarr_config_dir }}:/config"
       - "{{ radarr_data_dir }}:/data"
