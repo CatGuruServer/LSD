@@ -72,17 +72,12 @@
   debug:
     var: debug_radarr_api_key_stat
 
-# Fetch the Radarr API key from the remote machine
-- name: Fetch Radarr API key from the remote machine
-  ansible.builtin.slurp:
+# Fetch the Radarr API key from the remote machine to the control node
+- name: Fetch Radarr API key from the remote machine to the control node
+  ansible.builtin.fetch:
     src: "{{ key_dir }}/radarr_api.key"  # Path to the API key file on the remote machine
-  register: radarr_api_key_content
-
-# Save the Radarr API key to the control node
-- name: Save Radarr API key to the control node
-  ansible.builtin.copy:
-    content: "{{ radarr_api_key_content.content | b64decode }}"  # Decode the base64-encoded content
-    dest: "./radarr_api.key"  # Save the file locally on the control node
+    dest: "./radarr_api.key"            # Destination path on the control node
+    flat: yes                           # Save the file directly to the specified path
 
 # Deploy the Radarr Docker Compose file using a template
 - name: Deploy Radarr Docker Compose file
