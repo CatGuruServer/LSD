@@ -22,9 +22,15 @@
     - "{{ radarr_config_dir }}"
     - "{{ key_dir }}"  # Ensure the global key directory exists
 
+- name: Copy the API key generation script to the target machine
+  ansible.builtin.copy:
+    src: "roles/config/api_gen/generate_api_key.py"
+    dest: "/opt/api_gen/generate_api_key.py"
+    mode: '0755'
+
 - name: Generate Radarr API key
   command: >
-    python3 /config/api_gen/generate_api_key.py
+    python3 /opt/api_gen/generate_api_key.py
     radarr
     "{{ key_dir }}"
   register: radarr_key_output
