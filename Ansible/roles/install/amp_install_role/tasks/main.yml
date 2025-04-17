@@ -1,6 +1,6 @@
 - name: Install AMP with complete interactive automation
   ansible.builtin.expect:
-    command: bash -c "curl -k https://getamp.sh | bash"
+    command: "bash <(wget -qO- getamp.sh)"
     responses:
       'Username \[admin\]:' : "{{ amp_username }}"
       'Password:' : "{{ amp_password }}"
