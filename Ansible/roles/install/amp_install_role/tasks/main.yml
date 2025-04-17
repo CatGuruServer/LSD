@@ -1,6 +1,6 @@
 - name: Install AMP with complete interactive automation
   ansible.builtin.expect:
-    command: bash -c "wget -qO- https://getamp.sh | bash"
+    command: bash -c "wget --no-check-certificate -qO- https://getamp.sh | bash"
     responses:
       'Username \[admin\]:' : "{{ amp_username }}"
       'Password:' : "{{ amp_password }}"
