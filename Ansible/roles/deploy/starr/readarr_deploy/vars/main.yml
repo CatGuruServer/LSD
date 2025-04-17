@@ -1,4 +1,5 @@
 readarr_config_dir: "{{ config_base_dir }}/readarr"
+readarr_data_dir: "{{ media_base_dir }}"
 readarr_compose_dir: "{{ compose_base_dir }}/readarr"
 readarr_compose_path: "{{ readarr_compose_dir }}/docker-compose.yml"
 # Owner and group for Readarr files and directories

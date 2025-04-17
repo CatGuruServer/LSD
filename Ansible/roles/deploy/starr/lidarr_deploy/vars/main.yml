@@ -1,6 +1,6 @@
 ---
 lidarr_config_dir: "{{ config_base_dir }}/lidarr"
-lidarr_data_dir: "{{ lidarr_config_dir }}/data"
+lidarr_data_dir: "{{ lidarr_config_dir }}"
 lidarr_compose_dir: "{{ compose_base_dir }}/lidarr"
 lidarr_compose_path: "{{ lidarr_compose_dir }}/docker-compose.yml"
 # Owner and group for Lidarr files and directories
