@@ -25,6 +25,8 @@
   hosts: all
   become: true
   roles:
+    - install/amp_install_role
+    - install/tailscale_install
     - deploy/starr/radarr_deploy
     - deploy/starr/sonarr_deploy
     - deploy/starr/prowlarr_deploy
