@@ -3,8 +3,8 @@ services:
     image: linuxserver/prowlarr
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID={{ default_puid }}
+      - PGID={{ default_pgid }}
       - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
       - PROWLARR__AUTH__APIKEY={{ lookup('file', './api/prowlarr_api.key') }}  # API key for Prowlarr, read from a local file
       - UMASK_SET=022

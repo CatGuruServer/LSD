@@ -8,8 +8,8 @@ services:
       - {{ declutarr_data_dir }}:/data
     environment:
       - TZ={{ timezone }}  # Timezone for the container, dynamically set using the 'timezone' variable
-      - PUID=1000
-      - PGID=1000
+      - PUID={{ default_puid }}
+      - PGID={{ default_pgid }}
 
       ## General
       LOG_LEVEL: INFO

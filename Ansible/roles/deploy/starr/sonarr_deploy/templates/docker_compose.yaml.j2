@@ -3,8 +3,8 @@ services:
     image: linuxserver/sonarr
     container_name: sonarr
     environment:
-      - PUID=1000              # User ID for permissions inside the container
-      - PGID=1000              # Group ID for permissions inside the container
+      - PUID={{ default_puid }}
+      - PGID={{ default_pgid }}
       - TZ={{ timezone }}      # Timezone for the container, dynamically set using the 'timezone' variable
       - SONARR__AUTH__APIKEY={{ lookup('file', './api/sonarr_api.key') }}  # API key for Sonarr, read from a local file
     volumes:
