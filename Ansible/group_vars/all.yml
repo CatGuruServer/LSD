@@ -11,3 +11,8 @@ timezone: "Europe/London"
 # Other stuff
 default_owner: "catguru"  # Default owner for all services
 default_group: "catguru"  # Default group for all services
+#PUID and PGID
+default_puid: "1000"
+default_pgid: "1000"
+#tailscale authorization
+tailscale_authkey: (your authkey here)
