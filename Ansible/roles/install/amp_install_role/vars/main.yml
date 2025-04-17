@@ -1,8 +1,8 @@
 amp_username: admin
 amp_password: MySecurePassword123  # Use Ansible Vault in production!
-amp_use_docker: false
+amp_use_docker: true
 amp_use_https: false
-amp_minecraft: true
-amp_steamcmd: true
+amp_minecraft: false
+amp_steamcmd: false
 amp_domain: amp.example.com
 amp_email: user@example.com
