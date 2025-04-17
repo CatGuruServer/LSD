@@ -19,3 +19,9 @@
   ansible.builtin.apt:
     name: tailscale
     state: present
+
+- name: Log in to Tailscale using auth key
+  command: "tailscale up --authkey={{ tailscale_authkey }}"
+  register: tailscale_output
+  changed_when: "'Success.' in tailscale_output.stdout or 'Logged in' in tailscale_output.stdout"
+  failed_when: tailscale_output.rc != 0 and 'already logged in' not in tailscale_output.stderr
