@@ -1,17 +1,16 @@
-#File stuff
-config_base_dir: "/opt/configs"
-compose_base_dir: "/opt/compose"
-media_base_dir: "/mnt/md0/media"
-default_mode: '0755'  # Default file and directory permissions
-# Global directory for storing API keys
-key_dir: "/opt/apikeys"
-keygen_location: "/opt/api_gen"
-# Timezone for all services
-timezone: "Europe/London"
-# Other stuff
-default_owner: "catguru"  # Default owner for all services
-default_group: "catguru"  # Default group for all services
-#PUID and PGID
-default_puid: "1000"
-default_pgid: "1000"
+# File System Directories
+config_base_dir: "/opt/configs"             # Base directory for configuration files
+compose_base_dir: "/opt/compose"           # Base directory for Docker Compose files
+media_base_dir: "/mnt/md0/media"          # Base directory for media files
+key_dir: "/opt/apikeys"                    # Directory for storing API keys
+keygen_location: "/opt/api_gen"            # Location for API key generation
 
+# Permissions and Ownership
+default_mode: '0755'                       # Default file and directory permissions
+default_owner: "catguru"                   # Default owner for all services
+default_group: "catguru"                   # Default group for all services
+default_puid: "1000"                       # Default user ID (PUID)
+default_pgid: "1000"                       # Default group ID (PGID)
+
+# Timezone Configuration
+timezone: "Europe/London"                  # Timezone for all services
