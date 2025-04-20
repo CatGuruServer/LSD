@@ -32,7 +32,7 @@
     - deploy/starr/prowlarr_deploy
     - deploy/starr/jellyseerr_deploy
     - deploy/starr/lidarr_deploy
-    - deploy/starr/recyclarr_deploy
+#    - deploy/starr/recyclarr_deploy
     - deploy/media/jellyfin_deploy
     - deploy/media/qbittorrentvpn_deploy
     - deploy/media/audiobookshelf_deploy
@@ -40,3 +40,5 @@
     - deploy/utils/speedtest_tracker_deploy
  #   - deploy/utils/organizr_deploy
  #   - deploy/utils/portainer_deploy
+
+
