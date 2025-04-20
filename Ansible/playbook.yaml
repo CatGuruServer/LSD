@@ -25,7 +25,7 @@
   hosts: all
   become: true
   roles:
-    - install/amp_install_role
+#    - install/amp_install_role
     - install/tailscale_install
     - deploy/starr/radarr_deploy
     - deploy/starr/sonarr_deploy
@@ -38,5 +38,5 @@
     - deploy/media/audiobookshelf_deploy
     - deploy/media/jfa-go_deploy
     - deploy/utils/speedtest_tracker_deploy
-    - deploy/utils/organizr_deploy
-    - deploy/utils/portainer_deploy
+ #   - deploy/utils/organizr_deploy
+ #   - deploy/utils/portainer_deploy
