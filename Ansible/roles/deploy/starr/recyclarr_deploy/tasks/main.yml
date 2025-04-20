@@ -17,8 +17,8 @@
     path: "{{ item }}"
     state: directory
     mode: "0755"
-    owner: "catguru"
-    group: "catguru"
+    owner: "{{ recyclarr_owner }}"
+    group: "{{ recyclarr_group }}"
     recurse: true
   loop:
     - "{{ recyclarr_compose_dir }}"
