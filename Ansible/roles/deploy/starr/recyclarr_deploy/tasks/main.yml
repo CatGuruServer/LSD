@@ -14,16 +14,16 @@
   
 - name: Ensure recyclarr directories exist with proper permissions
   file:
-    path: "{{ item.path }}"
+    path: "{{ item }}"
     state: directory
     mode: "0755"
-    owner: "catguru"
-    group: "catguru"
+    owner: "{{ recyclarr_owner }}"
+    group: "{{ recyclarr_group }}"
     recurse: true
   loop:
-    - { path: "{{ recyclarr_compose_dir }}"}
-    - { path: "{{ recyclarr_config_dir }}" }
-    - { path: "{{ recyclarr_data_dir }}" }
+    - "{{ recyclarr_compose_dir }}"
+    - "{{ recyclarr_config_dir }}" 
+    - "{{ recyclarr_data_dir }}" 
     - "{{ key_dir }}"             # Global directory for storing API keys
     - "{{ keygen_location }}"     # Directory for the API key generation script
 
