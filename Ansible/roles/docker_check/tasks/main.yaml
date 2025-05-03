@@ -19,6 +19,24 @@
     name: install/docker_install
   when: docker_check_result.rc != 0
 
+# Check if Docker service is running
+- name: Check if Docker service is running
+  ansible.builtin.service_facts:
+
+# Set a fact if Docker is running
+- name: Set fact if Docker is running
+  ansible.builtin.set_fact:
+    docker_running: true
+  when: ansible_facts.services['docker'].state == 'running'
+
+# Ensure Docker service is running if not already running
+- name: Start Docker service if not running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  when: not docker_running
+
 # Error if Docker is not installed and the role is run independently
 - name: Error if Docker is not installed and role is run independently
   ansible.builtin.fail:

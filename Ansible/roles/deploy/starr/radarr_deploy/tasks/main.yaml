@@ -2,7 +2,7 @@
 # Check if Docker service is running
 - name: Check if Docker service is running
   ansible.builtin.service_facts:
-  when: not docker_installed  # Skip if Docker is already installed
+  when: docker_installed  # Only check if Docker is installed
 
 # Ensure Docker service is running
 - name: Ensure Docker service is running
@@ -10,7 +10,7 @@
     name: docker
     state: started
     enabled: true
-  when: not docker_installed  # Skip if Docker is already installed
+  when: docker_installed and not docker_running  # Ensure service is running only if installed but not running
 
 # Ensure required directories exist on the target machine
 - name: Ensure required directories exist

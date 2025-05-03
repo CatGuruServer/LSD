@@ -1,2 +1,3 @@
 ---
 docker_installed: false  # Default value for the Docker installed flag
+docker_running: false    # Default value for the Docker running flag

@@ -1,5 +1,6 @@
 # Ignore all .key files
 *.key
+
 # Ignore all .enc files
 *.enc
 
@@ -7,3 +8,6 @@
 group_vars/*
 !group_vars/docker/placeholder
 !group_vars/all.yml
+
+# Ignore VS Code settings
+.vscode/
