@@ -5,9 +5,9 @@
 *.enc
 
 # Ignore everything in group_vars except specific files
-group_vars/*
-!group_vars/docker/placeholder
-!group_vars/all.yml
+Ansible/group_vars/*
+!Ansible/group_vars/docker/placeholder
+!Ansible/group_vars/all.yml
 
 # Ignore VS Code settings
 .vscode/
