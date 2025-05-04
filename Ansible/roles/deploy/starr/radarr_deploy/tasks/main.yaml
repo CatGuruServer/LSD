@@ -1,5 +1,5 @@
 ---
-# Check if Docker service is running
+# Check if Docker service is installed
 - name: Check if Docker service is running
   ansible.builtin.service_facts:
   when: docker_installed  # Only check if Docker is installed

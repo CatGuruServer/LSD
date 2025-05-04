@@ -66,7 +66,7 @@
 # Deploy the Jellyseerr Docker Compose file using a template
 - name: Deploy jellyseerr Docker Compose file
   ansible.builtin.template:
-    src: "templates/jellyseerr-compose.yml.j2"  # Source template file
+    src: "templates/jellyseerr-compose.ymal.j2"  # Source template file
     dest: "{{ jellyseerr_compose_path }}"        # Destination path for the Docker Compose file
     mode: "{{ default_mode }}"               # Use the global default mode variable
     owner: "{{ jellyseerr_owner }}"              # Use the Jellyseerr-specific owner variable
