@@ -1,0 +1,53 @@
+- name: Wait for Radarr API
+  uri:
+    url: "http://localhost:7878/api/v3/system/status"
+    method: GET
+    headers:
+      X-Api-Key: "{{ radarr_api_key }}"
+  register: radarr_up
+  retries: 10
+  delay: 5
+  until: radarr_up.status == 200
+
+- name: Add Radarr root folder
+  uri:
+    url: "http://localhost:7878/api/v3/rootfolder"
+    method: POST
+    headers:
+      X-Api-Key: "{{ radarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      path: "{{ media_root }}/movies"
+    status_code: 201
+
+- name: Create TRaSH Guide quality profile (HD/BluRay+WEB)
+  uri:
+    url: "http://localhost:7878/api/v3/qualityprofile"
+    method: POST
+    headers:
+      X-Api-Key: "{{ radarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "Trash-HD-BLURAY+WEB"
+      upgradeAllowed: true
+      cutoff: 4
+      items:
+        - quality: { id: 4 }  # WEBDL-1080p
+          allowed: true
+        - quality: { id: 5 }  # Bluray-1080p
+          allowed: true
+    status_code: 201
+
+- name: Trigger Radarr library rescan
+  uri:
+    url: "http://localhost:7878/api/v3/command"
+    method: POST
+    headers:
+      X-Api-Key: "{{ radarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "RescanMovie"
+    status_code: 201

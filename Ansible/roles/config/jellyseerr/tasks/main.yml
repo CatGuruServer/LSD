@@ -1,0 +1,42 @@
+- name: Wait for Jellyseerr API
+  uri:
+    url: "http://localhost:5055/api/v1/settings/instance"
+    method: GET
+    headers:
+      X-Api-Key: "{{ jellyseerr_api_key }}"
+  register: js_up
+  retries: 10
+  delay: 5
+  until: js_up.status == 200
+
+- name: Configure Jellyseerr Radarr connection
+  uri:
+    url: "http://localhost:5055/api/v1/settings/radarr"
+    method: PUT
+    headers:
+      X-Api-Key: "{{ jellyseerr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      host: "localhost"
+      port: 7878
+      apiKey: "{{ radarr_api_key }}"
+      baseUrl: ""
+      secured: false
+    status_code: 204
+
+- name: Configure Jellyseerr Sonarr connection
+  uri:
+    url: "http://localhost:5055/api/v1/settings/sonarr"
+    method: PUT
+    headers:
+      X-Api-Key: "{{ jellyseerr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      host: "localhost"
+      port: 8989
+      apiKey: "{{ sonarr_api_key }}"
+      baseUrl: ""
+      secured: false
+    status_code: 204

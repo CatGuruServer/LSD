@@ -1,0 +1,38 @@
+- name: Wait for Prowlarr API
+  uri:
+    url: "http://localhost:9696/api/v1/system/status"
+    method: GET
+    headers:
+      X-Api-Key: "{{ prowlarr_api_key }}"
+  register: prow_up
+  retries: 10
+  delay: 5
+  until: prow_up.status == 200
+
+- name: Link Starr apps to Prowlarr
+  uri:
+    url: "http://localhost:9696/api/v1/app"
+    method: POST
+    headers:
+      X-Api-Key: "{{ prowlarr_api_key }}"
+      Content-Type: "application/json"
+    loop: "{{ present_starr }}"
+    loop_control:
+      loop_var: appname
+    body_format: json
+    body:
+      name: "{{ appname | capitalize }}"
+      implementation: "{{ appname | capitalize }}"
+      configContract: "{{ appname | capitalize }}Settings"
+      fields:
+        - name: hostname
+          value: localhost
+        - name: port
+          value: "{{ lookup('vars', appname + '_port') }}"
+        - name: apiKey
+          value: "{{ lookup('vars', appname + '_api_key') }}"
+        - name: useSsl
+          value: false
+        - name: syncLevel
+          value: FullSync
+    status_code: 201

@@ -1,0 +1,51 @@
+- name: Wait for Lidarr API
+  uri:
+    url: "http://localhost:8686/api/v1/system/status"
+    method: GET
+    headers:
+      X-Api-Key: "{{ lidarr_api_key }}"
+  register: lidarr_up
+  retries: 10
+  delay: 5
+  until: lidarr_up.status == 200
+
+- name: Add Lidarr root folder
+  uri:
+    url: "http://localhost:8686/api/v1/rootfolder"
+    method: POST
+    headers:
+      X-Api-Key: "{{ lidarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      path: "{{ media_root }}/music"
+    status_code: 201
+
+- name: Create TRaSH Guide quality profile (Music)
+  uri:
+    url: "http://localhost:8686/api/v1/qualityprofile"
+    method: POST
+    headers:
+      X-Api-Key: "{{ lidarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "Trash-Music-High"
+      upgradeAllowed: true
+      cutoff: 1       # Lossless
+      items:
+        - quality: { id: 1 }  # FLAC
+          allowed: true
+    status_code: 201
+
+- name: Trigger Lidarr library rescan
+  uri:
+    url: "http://localhost:8686/api/v1/command"
+    method: POST
+    headers:
+      X-Api-Key: "{{ lidarr_api_key }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      name: "RescanArtist"
+    status_code: 201

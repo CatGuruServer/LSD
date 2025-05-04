@@ -1,0 +1,8 @@
+- name: Wait for jfa-go API
+  uri:
+    url: "http://localhost:7575/api/health"
+    method: GET
+  register: jfago_up
+  retries: 10
+  delay: 5
+  until: jfago_up.status == 200
