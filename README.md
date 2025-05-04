@@ -1,3 +1,9 @@
+# ⚠️ Broken: amp-install Branch
+
+This branch (`amp-install`) is currently under development and may not function as expected. Use at your own risk.
+
+---
+
 # LazyServerDeploy
 
 **"We are lazy"** — a self-hosted, containerized media server stack using **Ansible** to set up Docker and manage deployment with Docker Compose.
