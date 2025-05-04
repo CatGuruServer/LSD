@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: amp_install
+  author: Sirbac
+  description: Install CubeCoders AMP via Expect
+collections:
+  - ansible.builtin

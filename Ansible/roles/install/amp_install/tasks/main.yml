@@ -1,0 +1,38 @@
+- name: Install Expect package
+  ansible.builtin.package:
+    name: expect
+    state: present
+
+- name: Download AMP installer script
+  ansible.builtin.get_url:
+    url: https://cubecoders.com/getamp.sh
+    dest: /usr/local/bin/getamp.sh
+    mode: '0755'
+  become: yes
+
+- name: Render AMP Expect wrapper (templated) into place
+  ansible.builtin.template:
+    src: amp-install.expect.j2
+    dest: /usr/local/bin/amp-install.expect
+    owner: root
+    group: root
+    mode: '0755'
+  become: yes
+
+- name: Ensure wrapper is present
+  ansible.builtin.stat:
+    path: /usr/local/bin/amp-install.expect
+  register: expect_stat
+  become: yes
+
+- name: Fail if wrapper didn’t land
+  ansible.builtin.fail:
+    msg: "Expected /usr/local/bin/amp-install.expect to exist!"
+  when: not expect_stat.stat.exists
+
+- name: Run AMP installer via Expect script
+  ansible.builtin.command: /usr/local/bin/amp-install.expect
+  become: yes
+  become_user: root
+  args:
+    chdir: /usr/local/bin

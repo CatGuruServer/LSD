@@ -1,0 +1,42 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+# Replace with your Ansible variables or hardcoded values
+set amp_web_username "admin"
+set amp_web_password "{{ amp_web_password }}"
+
+spawn /tmp/getamp.sh
+
+# Prompt: Username [admin]:
+expect "Username \[admin\]:" { send "$amp_web_username\r" }
+
+# Prompt: Password:
+expect "Password:" { send "$amp_web_password\r" }
+
+# Prompt: Confirm Password:
+expect "Confirm Password:" { send "$amp_web_password\r" }
+
+# Prompt: Docker isolation
+expect "Would you like to isolate your AMP instances by running them inside Docker containers?" { send "y\r" }
+
+# Prompt: HTTPS config
+expect "Enable HTTPS?" { send "n\r" }
+
+# Final confirmation to install AMP
+expect "Ready to install AMP. Press ENTER to continue or CTRL+C to cancel." { send "\r" }
+
+# Wait for the specific prompt indicating first-time setup
+expect {
+    -re ".*\[Info/14\] Waiting for user to complete first-time setup in browser\.\.\..*" {
+        # Proceed with the next steps after the prompt is detected
+        send_user "Detected AMP first-time setup prompt. Proceeding...\n"
+        # Add any additional commands here to continue the playbook
+    }
+    timeout {
+        send_user "Timeout occurred while waiting for the expected prompt.\n"
+        exit 1
+    }
+}
+
+expect eof

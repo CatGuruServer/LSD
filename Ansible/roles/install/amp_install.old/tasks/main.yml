@@ -1,0 +1,20 @@
+---
+- name: Download AMP installer script
+  get_url:
+    url: https://cubecoders.com/getamp.sh
+    dest: /tmp/getamp.sh
+    mode: '0755'
+
+- name: Run AMP installer noninteractively
+  community.general.expect:
+    command: /tmp/getamp.sh
+    responses:
+      'Enter a password for the new AMP user:': '{{ amp_admin_password }}'
+      'Confirm password:': '{{ amp_admin_password }}'
+      'Username \\[admin\\]:': 'admin'
+      'Password:': '{{ amp_web_password }}'
+      'Will you be running Minecraft servers.*': 'yes'
+      '.*SteamCMD.*': 'yes'
+    timeout: 600
+  become: yes
+

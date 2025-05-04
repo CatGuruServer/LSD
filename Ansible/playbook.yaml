@@ -1,10 +1,16 @@
 ---
 - name: Install required Ansible Galaxy collections and roles
   hosts: localhost
+  gather_facts: false
   tasks:
-    - name: Install collections and roles from requirements.yml
+    - name: Install collections from requirements.yml
       ansible.builtin.command:
-        cmd: ansible-galaxy install -r ./requirements.yml
+        cmd: ansible-galaxy collection install -r ./requirements.yml
+      changed_when: false
+
+    - name: Install roles from requirements.yml
+      ansible.builtin.command:
+        cmd: ansible-galaxy role install -r ./requirements.yml
       changed_when: false
 
 - hosts: all
@@ -25,7 +31,7 @@
   hosts: all
   become: true
   roles:
-#    - install/amp_install_role
+    - install/amp_install
     - install/tailscale_install
     - deploy/starr/radarr_deploy
     - deploy/starr/sonarr_deploy
