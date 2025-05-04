@@ -1,0 +1,1 @@
+amp_url: "https://cubecoders.com/Downloads/ampinstmgr-{{ ansible_architecture | regex_replace('x86_64', 'x86_64') | regex_replace('aarch64', 'arm64') }}.tar.gz"

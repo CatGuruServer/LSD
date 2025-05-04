@@ -1,0 +1,11 @@
+[Unit]
+Description=AMP (Application Management Panel)
+After=network.target
+
+[Service]
+User={{ amp_user }}
+ExecStart={{ amp_install_dir }}/AMPInstMgr
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

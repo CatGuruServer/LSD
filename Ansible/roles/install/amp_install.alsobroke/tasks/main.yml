@@ -1,0 +1,79 @@
+---
+- name: Check if AMP is already installed
+  ansible.builtin.stat:
+    path: "{{ amp_installer }}"
+  register: amp_installer_stat
+  changed_when: false
+  failed_when: false
+
+- name: Skip installation if AMP is already installed
+  ansible.builtin.debug:
+    msg: "AMP is already installed, skipping installation."
+  when: amp_installer_stat.stat.exists
+  run_once: true
+
+- name: Ensure AMP user exists
+  ansible.builtin.user:
+    name: "{{ amp_user }}"
+    shell: /bin/bash
+    create_home: yes
+  when: not amp_installer_stat.stat.exists
+
+- name: Ensure AMP install directory exists
+  ansible.builtin.file:
+    path: "{{ amp_install_dir }}"
+    state: directory
+    owner: "{{ amp_user }}"
+    group: "{{ amp_user }}"
+    mode: "0755"
+  when: not amp_installer_stat.stat.exists
+
+- name: Download AMP installer archive
+  ansible.builtin.get_url:
+    url: "{{ amp_url }}"
+    dest: "/tmp/amp.tar.gz"
+    mode: "0644"
+  when: not amp_installer_stat.stat.exists
+
+- name: Extract AMP installer
+  ansible.builtin.unarchive:
+    src: "/tmp/amp.tar.gz"
+    dest: "{{ amp_install_dir }}"
+    remote_src: yes
+    owner: "{{ amp_user }}"
+    group: "{{ amp_user }}"
+  when: not amp_installer_stat.stat.exists
+
+- name: Install AMP dependencies (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name:
+      - lib32gcc-s1
+      - ca-certificates
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+    - not amp_installer_stat.stat.exists
+
+- name: Install AMP dependencies (RedHat/CentOS/AlmaLinux)
+  ansible.builtin.yum:
+    name:
+      - glibc.i686
+      - ca-certificates
+    state: present
+  when:
+    - ansible_os_family == "RedHat"
+    - not amp_installer_stat.stat.exists
+
+- name: Set correct ownership on AMP directory
+  ansible.builtin.file:
+    path: "{{ amp_install_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ amp_user }}"
+    group: "{{ amp_user }}"
+  when: not amp_installer_stat.stat.exists
+
+- name: Display final instruction
+  ansible.builtin.debug:
+    msg: "Run AMP with: sudo -u {{ amp_user }} {{ amp_installer }}"
+  when: not amp_installer_stat.stat.exists
